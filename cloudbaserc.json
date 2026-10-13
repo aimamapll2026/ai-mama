@@ -1,0 +1,29 @@
+{
+  "version": "2.0",
+  "envId": "你的环境ID",
+  "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
+  "framework": {
+    "name": "ai-mama",
+    "plugins": {
+      "node": {
+        "use": "@cloudbase/framework-plugin-container",
+        "inputs": {
+          "serviceName": "ai-mama",
+          "servicePath": "/",
+          "containerPort": 80,
+          "cpu": 0.5,
+          "mem": 1,
+          "minNum": 1,
+          "maxNum": 1
+        }
+      }
+    }
+  },
+  "cloudrun": {
+    "name": "ai-mama",
+    "envVariables": {
+      "STORAGE": "cloud",
+      "NODE_ENV": "production"
+    }
+  }
+}
