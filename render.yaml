@@ -1,0 +1,29 @@
+# AI妈妈 · Render 部署配置（免费版）
+#
+# 用法：把本项目推到 GitHub，在 Render 里选「Blueprint」指向该仓库即可自动建好。
+# 或手动建 Web Service，Render 会自动读取 buildCommand / startCommand。
+#
+# 注意：AI Key 和邮箱授权码不用写在这里，直接在手机 App 的「设置」页填写即可。
+
+services:
+  - type: web
+    name: ai-mama
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TZ
+        value: Asia/Shanghai
+      # 数据落在腾讯云数据库（数据已在云上，实例休眠也不影响）
+      - key: STORAGE
+        value: cloud
+      # ↓↓↓ 首次部署时在 Render 控制台填这两个值（从你的腾讯云环境页面复制）
+      - key: TCB_ENV
+        sync: false
+      - key: CLOUDBASE_APIKEY
+        sync: false
