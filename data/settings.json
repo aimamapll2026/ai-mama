@@ -1,0 +1,23 @@
+{
+  "subscribedPlatforms": [
+    "抖音",
+    "小红书",
+    "视频号",
+    "头条号",
+    "微信公众号",
+    "B站",
+    "微博",
+    "快手"
+  ],
+  "weeklyReportTime": "每周一 09:00",
+  "notifyEmail": true,
+  "email": "375087889@qq.com",
+  "notifyRedDot": true,
+  "theme": "dark",
+  "productName": "AI妈妈",
+  "aiProvider": "dashscope",
+  "aiBaseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "aiModel": "qwen-plus",
+  "smtpProvider": "qq",
+  "smtpUser": "375087889@qq.com"
+}
