@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#06080f">
+<!-- PWA：让手机可以「添加到主屏幕」，像 App 一样打开 -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI妈妈">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>AI妈妈 · 变现机会工作台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='44' fill='%23171e33'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ff9640'/%3E%3Cstop offset='100%25' stop-color='%23ef4f30'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='68' fill='none' stroke='rgba(255,255,255,0.25)' stroke-width='3.5'/%3E%3Ccircle cx='100' cy='100' r='57' fill='none' stroke='url(%23g)' stroke-width='4' opacity='.5'/%3E%3Ccircle cx='100' cy='80' r='18.5' fill='none' stroke='url(%23g)' stroke-width='8.5'/%3E%3Cpath d='M68.5,142.8 C68.5,114.2 84.3,100.5 100,100.5 C115.7,100.5 131.5,114.2 131.5,142.8' fill='none' stroke='url(%23g)' stroke-width='8.5' stroke-linecap='round'/%3E%3Cpath d='M81.4,77.1 C71.4,94.2 70,117.1 72.8,137.1' stroke='url(%23g)' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M118.6,77.1 C128.6,94.2 130,117.1 127.2,137.1' stroke='url(%23g)' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   AI妈妈 · 视觉系统 v2（自包含）
+   深色科技风（默认）× 浅色清爽 双主题
+   玻璃拟态卡片 + 品牌渐变 + 光晕氛围 + 进场动效
+   ============================================================ */
+:root {
+  --bg: #06080f;
+  --bg-soft: #0b0f1a;
+  --glass: rgba(255,255,255,.045);
+  --glass-strong: rgba(255,255,255,.08);
+  --border: rgba(255,255,255,.09);
+  --border-bright: rgba(255,255,255,.16);
+  --text: #eef2f9;
+  --text-dim: #97a1b3;
+  --text-faint: #5c6675;
+
+  --brand-1: #ff6b3d;
+  --brand-2: #ffa63d;
+  --grad: linear-gradient(135deg, #ff6b3d 0%, #ffa63d 100%);
+  --grad-soft: linear-gradient(135deg, rgba(255,107,61,.16), rgba(255,166,61,.10));
+  --tech: #34e0c8;
+  --flow: #5aa7ff;
+  --sample: #b98cff;
+  --success: #4ade80;
+  --danger: #ff5d5d;
+  --warn: #ffc53d;
+
+  --r-lg: 20px;
+  --r-md: 14px;
+  --shadow: 0 12px 40px rgba(0,0,0,.5);
+  --glow-brand: 0 6px 24px rgba(255,107,61,.30);
+}
+[data-theme="light"] {
+  --bg: #f2f4f9;
+  --bg-soft: #ffffff;
+  --glass: rgba(255,255,255,.78);
+  --glass-strong: rgba(20,35,70,.05);
+  --border: rgba(20,35,70,.09);
+  --border-bright: rgba(20,35,70,.18);
+  --text: #171d2b;
+  --text-dim: #5c6678;
+  --text-faint: #9aa3b5;
+  --shadow: 0 10px 32px rgba(30,45,90,.10);
+  --glow-brand: 0 6px 22px rgba(255,107,61,.25);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--text);
+  font-size: 15px; line-height: 1.65;
+  min-height: 100vh;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  transition: background .3s, color .3s;
+}
+/* 氛围光晕 */
+body::before {
+  content:''; position:fixed; z-index:-1; pointer-events:none;
+  top:-220px; left:50%; transform:translateX(-50%);
+  width:640px; height:520px; border-radius:50%;
+  background: radial-gradient(closest-side, rgba(255,107,61,.16), transparent 72%);
+  filter: blur(10px);
+}
+body::after {
+  content:''; position:fixed; z-index:-1; pointer-events:none;
+  bottom:-260px; right:-160px;
+  width:480px; height:480px; border-radius:50%;
+  background: radial-gradient(closest-side, rgba(52,224,200,.09), transparent 70%);
+  filter: blur(14px);
+}
+.hidden { display:none !important; }
+
+/* ---------- 顶部栏 ---------- */
+.topbar {
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px; padding-top:calc(14px + env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom:1px solid var(--border);
+}
+.brand { display:flex; align-items:center; gap:12px; }
+.avatar {
+  width:42px; height:42px; border-radius:14px;
+  background:#171e33;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:18px; color:#221002;
+  box-shadow: 0 4px 16px rgba(239,79,48,.35);
+  position:relative;
+}
+.avatar::after {
+  content:''; position:absolute; inset:0; border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.10), transparent 55%);
+  pointer-events:none;
+}
+.avatar svg, .mama-avatar svg, .mini-avatar svg {
+  width: 92%; height: 92%; display:block; color:rgba(255,255,255,.18); position:relative; z-index:1;
+}
+.brand-name { font-size:17px; font-weight:800; letter-spacing:.4px; display:flex; align-items:center; gap:8px; }
+.brand-sub { font-size:11px; color:var(--text-dim); }
+.demo-chip {
+  font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px;
+  background:rgba(90,167,255,.16); color:var(--flow); border:1px solid rgba(90,167,255,.3);
+}
+.icon-btn {
+  background:var(--glass); border:1px solid var(--border);
+  color:var(--text); width:38px; height:38px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition: transform .15s, border-color .15s;
+}
+.icon-btn:active { transform:scale(.92); border-color:var(--border-bright); }
+
+/* ---------- 页面 ---------- */
+.page { padding:18px; animation: pageIn .35s cubic-bezier(.22,.8,.32,1); }
+@keyframes pageIn { from { opacity:0; transform:translateY(14px);} to { opacity:1; transform:none;} }
+
+/* ---------- 妈妈点评卡 ---------- */
+.mama-card {
+  position:relative; overflow:hidden;
+  display:flex; gap:13px; align-items:flex-start;
+  background: var(--grad-soft);
+  border:1px solid rgba(255,140,80,.28);
+  border-radius: var(--r-lg); padding:16px; margin-bottom:18px;
+}
+.mama-card::before {
+  content:''; position:absolute; right:-40px; top:-40px;
+  width:150px; height:150px; border-radius:50%;
+  background: radial-gradient(closest-side, rgba(255,166,61,.22), transparent);
+}
+.mama-avatar {
+  flex:0 0 38px; width:38px; height:38px; border-radius:50%;
+  background:#171e33; color:rgba(255,255,255,.18); font-weight:800;
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+  box-shadow: 0 4px 14px rgba(239,79,48,.35);
+}
+.mama-bubble { font-size:14px; flex:1; position:relative; }
+.mama-bubble b { color:var(--brand-2); }
+[data-theme="light"] .mama-bubble b { color:#e05a28; }
+
+/* ---------- 统计 ---------- */
+.stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:22px; }
+.stat {
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-md); padding:14px 8px 12px; text-align:center;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  position:relative; overflow:hidden;
+}
+.stat::before {
+  content:''; position:absolute; top:0; left:20%; right:20%; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,166,61,.5), transparent);
+}
+.stat-num {
+  font-size:26px; font-weight:800; line-height:1.15;
+  background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.stat-label { font-size:11px; color:var(--text-dim); margin-top:3px; }
+
+/* ---------- 区块标题 ---------- */
+.section-head { display:flex; align-items:center; justify-content:space-between; margin:20px 0 12px; }
+.section-head h2 {
+  font-size:17px; font-weight:800; letter-spacing:.3px;
+  display:flex; align-items:center; gap:8px;
+}
+.section-head h2::before {
+  content:''; width:4px; height:16px; border-radius:4px; background:var(--grad);
+}
+.more { font-size:13px; color:var(--brand-2); cursor:pointer; font-weight:600; }
+[data-theme="light"] .more { color:#e05a28; }
+
+/* ---------- 卡片 ---------- */
+.card-list { display:flex; flex-direction:column; gap:12px; }
+.card {
+  position:relative; overflow:hidden;
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:16px; cursor:pointer;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  transition: transform .18s cubic-bezier(.22,.8,.32,1), border-color .18s;
+  animation: cardIn .5s cubic-bezier(.22,.8,.32,1) backwards;
+}
+@keyframes cardIn { from { opacity:0; transform:translateY(16px) scale(.98);} to { opacity:1; transform:none;} }
+.card:nth-child(1) { animation-delay:.02s; } .card:nth-child(2) { animation-delay:.07s; }
+.card:nth-child(3) { animation-delay:.12s; } .card:nth-child(4) { animation-delay:.17s; }
+.card:nth-child(5) { animation-delay:.22s; } .card:nth-child(6) { animation-delay:.27s; }
+.card:active { transform:scale(.98); }
+.card::before {
+  content:''; position:absolute; left:0; top:14px; bottom:14px; width:3px; border-radius:0 4px 4px 0;
+}
+.card.type-flow::before { background:var(--flow); box-shadow:0 0 12px rgba(90,167,255,.5); }
+.card.type-prize::before { background:var(--grad); box-shadow:0 0 12px rgba(255,107,61,.5); }
+.card.type-product::before { background:var(--tech); box-shadow:0 0 12px rgba(52,224,200,.5); }
+.card.type-sample::before { background:var(--sample); box-shadow:0 0 12px rgba(185,140,255,.5); }
+
+.card-top { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+.platform {
+  font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;
+  background:var(--glass-strong); color:var(--text-dim); border:1px solid var(--border);
+}
+.badge { font-size:11px; padding:3px 9px; border-radius:20px; font-weight:700; letter-spacing:.3px; }
+.badge-flow { background:rgba(90,167,255,.14); color:var(--flow); }
+.badge-prize { background:rgba(255,107,61,.14); color:var(--brand-2); }
+[data-theme="light"] .badge-prize { color:#e05a28; }
+.badge-product { background:rgba(52,224,200,.14); color:var(--tech); }
+[data-theme="light"] .badge-product { color:#0aa892; }
+.badge-sample { background:rgba(185,140,255,.14); color:var(--sample); }
+[data-theme="light"] .badge-sample { color:#7c4ddb; }
+.badge-urgent { background:rgba(255,93,93,.14); color:var(--danger); }
+
+.card-title { font-size:15.5px; font-weight:700; margin-bottom:6px; line-height:1.45; }
+.card-summary {
+  font-size:12.5px; color:var(--text-dim); margin-bottom:10px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.card-reward { font-size:13.5px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+.card-reward .coin {
+  width:18px; height:18px; border-radius:50%; background:var(--grad);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:800; color:#221002; flex:0 0 auto;
+}
+.card-foot { display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:var(--text-faint); }
+.card-comment {
+  font-size:12.5px; margin-top:10px; padding-top:10px;
+  border-top:1px dashed var(--border); color:var(--text-dim);
+  display:flex; gap:8px; align-items:flex-start;
+}
+.card-comment .mini-avatar {
+  flex:0 0 20px; width:20px; height:20px; border-radius:50%; background:#171e33;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:800; color:rgba(255,255,255,.18); margin-top:2px;
+}
+
+/* ---------- 搜索与标签 ---------- */
+.search-bar { position:relative; margin-bottom:14px; }
+.search-bar svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--text-faint); pointer-events:none; }
+.search-bar input {
+  width:100%; padding:13px 16px 13px 42px; border-radius:16px;
+  background:var(--glass); border:1px solid var(--border);
+  color:var(--text); font-size:14px; outline:none; font-family:inherit;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: border-color .2s, box-shadow .2s;
+}
+.search-bar input:focus { border-color:rgba(255,140,80,.5); box-shadow:0 0 0 4px rgba(255,107,61,.10); }
+.search-bar input::placeholder { color:var(--text-faint); }
+.tabs { display:flex; gap:9px; overflow-x:auto; padding:2px 2px 12px; margin-bottom:4px; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab {
+  flex:0 0 auto; padding:8px 16px; border-radius:22px; font-size:13px; font-weight:600;
+  background:var(--glass); border:1px solid var(--border); color:var(--text-dim);
+  cursor:pointer; white-space:nowrap; transition:all .2s; font-family:inherit;
+}
+.tab:active { transform:scale(.95); }
+.tab.active {
+  background:var(--grad); color:#221002; font-weight:800; border-color:transparent;
+  box-shadow: var(--glow-brand);
+}
+
+/* ---------- 详情 ---------- */
+.back-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--glass); border:1px solid var(--border); color:var(--text-dim);
+  padding:8px 14px; border-radius:12px; font-size:13px; cursor:pointer; margin-bottom:14px;
+  font-family:inherit; transition:all .15s;
+}
+.back-btn:active { transform:scale(.95); }
+.detail-head { margin-bottom:16px; }
+.detail-title { font-size:21px; font-weight:800; line-height:1.4; margin:10px 0 4px; letter-spacing:.2px; }
+.detail-block {
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:16px; margin-bottom:12px;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.detail-block h3 {
+  font-size:11.5px; color:var(--text-faint); font-weight:700;
+  margin-bottom:10px; letter-spacing:1.5px;
+}
+.detail-block p { font-size:14px; }
+.kv { display:flex; gap:10px; font-size:13.5px; padding:8px 0; border-bottom:1px dashed var(--border); line-height:1.6; }
+.kv:last-child { border-bottom:none; padding-bottom:0; }
+.kv .k { color:var(--text-faint); flex:0 0 76px; font-size:12.5px; }
+.kv .v { flex:1; min-width:0; word-break:break-all; }
+.kv .v a { color:var(--tech); text-decoration:none; }
+[data-theme="light"] .kv .v a { color:#0aa892; }
+
+/* ---------- 按钮 ---------- */
+.btn {
+  width:100%; padding:15px; border-radius:16px; border:none;
+  font-size:15.5px; font-weight:800; cursor:pointer; margin-top:12px;
+  background:var(--grad); color:#221002; font-family:inherit; letter-spacing:.5px;
+  box-shadow: var(--glow-brand);
+  transition: transform .15s, box-shadow .15s; position:relative; overflow:hidden;
+}
+.btn::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(255,255,255,.28), transparent 50%);
+  pointer-events:none;
+}
+.btn:active { transform:scale(.97); }
+.btn-ghost {
+  background:var(--glass); color:var(--text); border:1px solid var(--border);
+  box-shadow:none; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+}
+.btn-ghost::after { display:none; }
+.btn-danger { background:rgba(255,93,93,.10); color:var(--danger); border:1px solid rgba(255,93,93,.3); box-shadow:none; }
+.btn-danger::after { display:none; }
+.btn-mini {
+  padding:7px 13px; font-size:12px; border-radius:10px; font-weight:700;
+  background:var(--glass); border:1px solid var(--border); color:var(--brand-2);
+  cursor:pointer; width:auto; margin:0; font-family:inherit; transition:all .15s;
+}
+[data-theme="light"] .btn-mini { color:#e05a28; }
+.btn-mini:active { transform:scale(.94); }
+
+/* ---------- 评分 ---------- */
+.score-row { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+.score-name { flex:0 0 92px; font-size:12.5px; color:var(--text-dim); font-weight:600; }
+.score-bar { flex:1; height:8px; border-radius:6px; background:var(--glass-strong); overflow:hidden; border:1px solid var(--border); }
+.score-fill { height:100%; border-radius:6px; background:var(--grad); transition: width .8s cubic-bezier(.22,.8,.32,1); }
+.score-val { flex:0 0 36px; text-align:right; font-size:13px; font-weight:800; }
+.score-note { font-size:12px; color:var(--text-faint); margin:0 0 14px 104px; line-height:1.6; }
+.big-score { text-align:center; padding:20px 0 14px; }
+.big-score .num {
+  font-size:56px; font-weight:800; line-height:1;
+  background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter: drop-shadow(0 4px 18px rgba(255,107,61,.35));
+}
+.big-score .verdict { font-size:14.5px; color:var(--brand-2); margin-top:10px; font-weight:700; }
+[data-theme="light"] .big-score .verdict { color:#e05a28; }
+
+/* ---------- 输入 ---------- */
+textarea {
+  width:100%; min-height:150px; padding:14px; border-radius:16px;
+  background:var(--glass); border:1px solid var(--border);
+  color:var(--text); font-size:14px; font-family:inherit; line-height:1.7;
+  outline:none; resize:vertical;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  transition:border-color .2s, box-shadow .2s;
+}
+textarea:focus { border-color:rgba(255,140,80,.5); box-shadow:0 0 0 4px rgba(255,107,61,.10); }
+textarea::placeholder { color:var(--text-faint); }
+
+.compare { display:grid; gap:12px; margin:12px 0; }
+.compare-col {
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:14px;
+}
+.compare-col h4 { font-size:12px; color:var(--text-faint); margin-bottom:8px; letter-spacing:1px; }
+.compare-col .txt { font-size:13px; white-space:pre-wrap; max-height:260px; overflow-y:auto; line-height:1.8; }
+.compare-col.new { border-color:rgba(255,140,80,.45); background:var(--grad-soft); }
+
+/* ---------- 列表项 / 状态 ---------- */
+.list-item {
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:15px; margin-bottom:12px;
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  animation:cardIn .4s cubic-bezier(.22,.8,.32,1) backwards;
+}
+.li-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.status { font-size:11px; padding:3px 10px; border-radius:20px; font-weight:700; }
+.status-ongoing { background:rgba(255,197,61,.14); color:var(--warn); }
+.status-submitted { background:rgba(52,224,200,.14); color:var(--tech); }
+.status-won { background:rgba(74,222,128,.14); color:var(--success); }
+.status-ended { background:var(--glass-strong); color:var(--text-faint); }
+
+/* ---------- 打卡进度看板 ---------- */
+.rec-card {
+  position:relative; overflow:hidden;
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:15px; margin-bottom:13px;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.rec-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+  background:var(--grad);
+}
+.rec-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+.rec-title { font-size:15px; font-weight:700; line-height:1.45; margin-bottom:10px; }
+.rec-steps { display:flex; align-items:center; gap:0; margin:12px 0 14px; }
+.rec-step { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; }
+.rec-step .dot {
+  width:19px; height:19px; border-radius:50%; border:2px solid var(--border-bright);
+  background:var(--bg); display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:var(--text-faint); z-index:1; transition:all .25s;
+}
+.rec-step.done .dot { background:var(--grad); border-color:transparent; color:#221002; font-weight:800; }
+.rec-step.cur .dot { border-color:var(--brand-2); color:var(--brand-2); box-shadow:0 0 0 4px rgba(255,140,80,.16); }
+.rec-step .lbl { font-size:9.5px; color:var(--text-faint); text-align:center; line-height:1.3; }
+.rec-step.done .lbl, .rec-step.cur .lbl { color:var(--text-dim); font-weight:600; }
+.rec-step::after {
+  content:''; position:absolute; top:9px; left:50%; width:100%; height:2px;
+  background:var(--border); z-index:0;
+}
+.rec-step:last-child::after { display:none; }
+.rec-step.done::after { background:var(--grad); }
+.rec-metrics { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.rec-metric {
+  flex:1; min-width:78px; background:var(--glass-strong); border:1px solid var(--border);
+  border-radius:13px; padding:9px 11px;
+}
+.rec-metric .mv { font-size:17px; font-weight:800; letter-spacing:-.3px; }
+.rec-metric .mv.hi { background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.rec-metric .ml { font-size:10px; color:var(--text-faint); margin-top:2px; }
+.rec-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.rec-actions .btn-mini.primary {
+  background:var(--grad); color:#221002; font-weight:800; border:none;
+}
+/* 打卡弹窗表单 */
+.ci-form label { display:block; font-size:12px; color:var(--text-dim); margin:12px 0 6px; font-weight:600; }
+.ci-form input, .ci-form select, .ci-form textarea {
+  width:100%; padding:11px 13px; border-radius:13px; font-size:14px;
+  background:var(--glass-strong); border:1px solid var(--border);
+  color:var(--text); outline:none; font-family:inherit;
+}
+.ci-form input:focus, .ci-form select:focus, .ci-form textarea:focus { border-color:var(--brand-2); }
+.ci-status-grid { display:flex; gap:7px; flex-wrap:wrap; margin-top:6px; }
+.ci-status-grid .st-chip {
+  padding:7px 13px; border-radius:20px; font-size:12.5px; cursor:pointer;
+  background:var(--glass-strong); border:1px solid var(--border); color:var(--text-dim);
+  transition:all .18s;
+}
+.ci-status-grid .st-chip.on { background:var(--grad); color:#221002; font-weight:700; border-color:transparent; }
+.rec-summary { display:flex; gap:9px; margin-bottom:16px; }
+.rec-summary .sm {
+  flex:1; background:var(--grad-soft); border:1px solid rgba(255,140,80,.24);
+  border-radius:15px; padding:12px; text-align:center;
+}
+.rec-summary .sm .n { font-size:20px; font-weight:800; background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.rec-summary .sm .t { font-size:10.5px; color:var(--text-dim); margin-top:3px; }
+
+/* ---------- 设置 ---------- */
+.engine-chip {
+  display:flex; align-items:center; gap:7px; flex-wrap:wrap;
+  font-size:11.5px; font-weight:700; padding:7px 12px; border-radius:10px;
+  margin-bottom:12px; line-height:1.5;
+}
+.engine-chip .why { font-weight:500; color:var(--text-faint); font-size:11px; }
+.engine-chip.ai {
+  background:linear-gradient(135deg, rgba(255,107,61,.14), rgba(255,166,61,.08));
+  border:1px solid rgba(255,140,61,.32); color:var(--brand-2);
+}
+.engine-chip.rule {
+  background:var(--glass); border:1px solid var(--border); color:var(--text-dim);
+}
+.ai-status {
+  display:flex; align-items:center; gap:8px;
+  font-size:12.5px; padding:9px 12px; border-radius:10px; margin-bottom:12px;
+}
+.ai-status.on { background:rgba(74,222,128,.10); border:1px solid rgba(74,222,128,.28); color:var(--success); }
+.ai-status.off { background:rgba(255,197,61,.08); border:1px solid rgba(255,197,61,.26); color:var(--warn); }
+.engine-pick {
+  display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 4px;
+}
+.engine-pick .ep {
+  flex:1 1 46%; min-width:140px; text-align:left;
+  background:var(--glass); border:1px solid var(--border); border-radius:12px;
+  padding:10px 12px; cursor:pointer; transition:.18s;
+}
+.engine-pick .ep.on { border-color:var(--brand-1); background:rgba(255,107,61,.10); }
+.engine-pick .ep .n { font-size:13px; font-weight:800; }
+.engine-pick .ep .d { font-size:11px; color:var(--text-faint); margin-top:3px; line-height:1.5; }
+.guide-box {
+  background:var(--glass); border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px; font-size:12.5px; line-height:1.9; color:var(--text-dim);
+  margin-top:10px;
+}
+.guide-box b { color:var(--text); }
+.guide-box ol { margin:8px 0 0 16px; }
+.guide-box li { margin-bottom:4px; }
+.guide-box a { color:var(--brand-2); text-decoration:none; border-bottom:1px dashed; }
+
+.setting-item {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:16px; background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-md); margin-bottom:11px;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+}
+.setting-col { flex-direction:column; align-items:flex-start; }
+.setting-label { font-size:14.5px; font-weight:700; }
+.setting-desc { font-size:11.5px; color:var(--text-faint); margin-top:3px; }
+.switch {
+  width:50px; height:28px; border-radius:20px; background:var(--glass-strong);
+  border:1px solid var(--border); position:relative; cursor:pointer;
+  flex:0 0 auto; transition:background .25s;
+}
+.switch::after {
+  content:''; position:absolute; top:2px; left:2px; width:22px; height:22px;
+  border-radius:50%; background:var(--text-faint); transition:all .25s cubic-bezier(.22,.8,.32,1);
+}
+.switch.on { background:var(--grad); border-color:transparent; box-shadow:var(--glow-brand); }
+.switch.on::after { left:24px; background:#fff; }
+.platform-chips { display:flex; flex-wrap:wrap; gap:9px; margin-top:12px; }
+.chip {
+  padding:8px 15px; border-radius:22px; font-size:13px; font-weight:600;
+  background:var(--glass-strong); border:1px solid var(--border); color:var(--text-dim);
+  cursor:pointer; transition:all .2s;
+}
+.chip:active { transform:scale(.94); }
+.chip.on { background:var(--grad); color:#221002; font-weight:800; border-color:transparent; }
+.setting-input {
+  background:var(--glass-strong); border:1px solid var(--border); color:var(--text);
+  padding:9px 13px; border-radius:12px; font-size:13px; outline:none; width:172px; text-align:right; font-family:inherit;
+}
+.setting-input:focus { border-color:rgba(255,140,80,.5); }
+
+/* ---------- 底部导航 ---------- */
+.tabbar {
+  position:fixed; bottom:0; left:0; right:0; z-index:60;
+  display:flex; justify-content:space-around;
+  background: color-mix(in srgb, var(--bg-soft) 78%, transparent);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border-top:1px solid var(--border);
+  padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+}
+.nav-item {
+  flex:1; background:none; border:none; color:var(--text-faint);
+  font-size:10.5px; font-weight:600;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  cursor:pointer; padding:5px 0 3px; font-family:inherit;
+  transition:color .2s; position:relative;
+}
+.nav-item svg { width:22px; height:22px; }
+.nav-item.active { color:var(--brand-2); font-weight:800; }
+[data-theme="light"] .nav-item.active { color:#e05a28; }
+.nav-item.active::before {
+  content:''; position:absolute; top:-9px; width:26px; height:3px; border-radius:0 0 4px 4px;
+  background:var(--grad);
+}
+
+/* ---------- 模态 / Toast ---------- */
+.modal-mask {
+  position:fixed; inset:0; z-index:100; background:rgba(0,0,0,.65);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  animation:fade .2s;
+}
+.modal {
+  background:var(--bg-soft); border:1px solid var(--border-bright);
+  border-radius:22px; padding:22px; width:100%; max-width:430px;
+  max-height:80vh; overflow-y:auto; box-shadow:var(--shadow);
+  animation:modalIn .3s cubic-bezier(.22,.8,.32,1);
+}
+@keyframes modalIn { from { opacity:0; transform:scale(.92) translateY(10px);} to { opacity:1; transform:none;} }
+@keyframes fade { from{opacity:0;} to{opacity:1;} }
+.modal h3 { font-size:17px; margin-bottom:12px; font-weight:800; }
+.modal p { font-size:13.5px; color:var(--text-dim); margin-bottom:14px; }
+
+.toast {
+  position:fixed; bottom:104px; left:50%; transform:translateX(-50%);
+  background:var(--glass-strong); color:var(--text); padding:11px 20px;
+  border-radius:24px; font-size:13.5px; z-index:200; font-weight:600;
+  border:1px solid var(--border-bright); box-shadow:var(--shadow);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  max-width:84vw; text-align:center; animation:fade .3s;
+}
+
+/* ---------- 空状态 / 加载 ---------- */
+.empty { text-align:center; padding:56px 24px; color:var(--text-faint); }
+.empty .emoji { font-size:46px; margin-bottom:14px; }
+.empty .txt { font-size:13.5px; }
+.skeleton {
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:var(--r-lg); height:100px; margin-bottom:12px; position:relative; overflow:hidden;
+}
+.skeleton::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+  animation:shimmer 1.3s infinite;
+}
+@keyframes shimmer { from{transform:translateX(-100%);} to{transform:translateX(100%);} }
+
+.warn-box {
+  background:rgba(255,93,93,.09); border:1px solid rgba(255,93,93,.32);
+  border-radius:var(--r-md); padding:14px; margin-bottom:12px;
+  font-size:13px; color:var(--danger); line-height:1.7;
+}
+.note { font-size:11.5px; color:var(--text-faint); text-align:center; padding:14px 8px; line-height:1.7; }
+.days-urgent { color:var(--danger); font-weight:700; }
+</style>
+</head>
+<body>
+
+<!-- 品牌图形：圆环小人（圆头 + 拱形腿）——全局 symbol，各处通过 <use> 引用 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff6b3d"/><stop offset="1" stop-color="#ffa63d"/>
+    </linearGradient>
+  </defs>
+  <symbol id="mama-face" viewBox="-70 -70 140 140">
+    <!-- ② 圆环 + 女性剪影（原封不动，来自第一批方案原始代码） -->
+    <circle cx="0" cy="0" r="48" fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="url(#logoGrad)" stroke-width="3" opacity=".5"/>
+    <!-- 女性头肩剪影 -->
+    <circle cx="0" cy="-14" r="13" fill="none" stroke="url(#logoGrad)" stroke-width="6"/>
+    <path d="M-22,30 C-22,10 -10,4 0,4 C10,4 22,10 22,30" fill="none" stroke="url(#logoGrad)" stroke-width="6" stroke-linecap="round"/>
+    <!-- 长发垂落 -->
+    <path d="M-13,-16 C-20,-4 -21,12 -19,26" stroke="url(#logoGrad)" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M13,-16 C20,-4 21,12 19,26" stroke="url(#logoGrad)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="avatar"><svg viewBox="0 0 140 140"><use href="#mama-face"/></svg></div>
+    <div class="brand-text">
+      <div class="brand-name">AI妈妈 <span class="demo-chip hidden" id="demoChip">演示数据</span></div>
+      <div class="brand-sub" id="brandSub">女性内容创作者的变现管家</div>
+    </div>
+  </div>
+  <button class="icon-btn" id="themeBtn" title="切换主题" aria-label="切换主题">
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+  </button>
+</header>
+
+<main id="app">
+
+  <section class="page" id="page-home">
+    <div class="mama-card">
+      <div class="mama-avatar"><svg viewBox="0 0 140 140"><use href="#mama-face"/></svg></div>
+      <div class="mama-bubble" id="mamaBubble">姐妹，妈妈正在帮你整理本周的机会…</div>
+    </div>
+    <div class="stat-row" id="statRow"></div>
+    <div class="section-head"><h2>本周机会</h2><span class="more" data-nav="list">全部 ›</span></div>
+    <div id="homeList" class="card-list"></div>
+  </section>
+
+  <section class="page hidden" id="page-list">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="搜索活动名、平台、关键词…">
+    </div>
+    <div class="tabs" id="typeTabs">
+      <button class="tab active" data-type="all">全部</button>
+      <button class="tab" data-type="flow">流量分成</button>
+      <button class="tab" data-type="prize">投稿评奖</button>
+      <button class="tab" data-type="product">产品上架</button>
+      <button class="tab" data-type="sample">🎁 免费申样</button>
+      <button class="tab" data-sort="deadline">⏰ 截止临近</button>
+      <button class="tab" data-sort="reward">💰 高奖金</button>
+    </div>
+    <div id="listResult" class="card-list"></div>
+  </section>
+
+  <section class="page hidden" id="page-detail"></section>
+
+  <section class="page hidden" id="page-records">
+    <div class="section-head"><h2>我的记录</h2></div>
+    <div id="recordList" class="card-list"></div>
+  </section>
+
+  <section class="page hidden" id="page-reports">
+    <div class="section-head"><h2>周报历史</h2><button class="btn-mini" id="genReportBtn">＋ 生成本周周报</button></div>
+    <div id="reportList" class="card-list"></div>
+  </section>
+
+  <section class="page hidden" id="page-learn">
+    <div class="section-head"><h2>学习提升</h2></div>
+    <div class="mama-card"><div class="mama-avatar"><svg viewBox="0 0 140 140" style="width:88%;height:88%;color:rgba(255,255,255,.18)"><use href="#mama-face"/></svg></div><div class="mama-bubble" id="learnBubble">姐妹，妈妈帮你筛了一批「涨粉 · 变现」的实战干货，都是我挑过的，每条下面提炼了 3-4 个核心要点，点标题就能跳去看原文。</div></div>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="learnSearch" type="search" placeholder="搜索主题、平台、关键词…">
+    </div>
+    <div class="tabs" id="learnTabs">
+      <button class="tab active" data-topic="all">全部</button>
+    </div>
+    <div id="learnList" class="card-list"></div>
+  </section>
+
+  <section class="page hidden" id="page-settings">
+    <div class="section-head"><h2>设置</h2></div>
+    <div id="settingsBox"></div>
+  </section>
+
+</main>
+
+<nav class="tabbar">
+  <button class="nav-item active" data-nav="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>首页
+  </button>
+  <button class="nav-item" data-nav="list">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>机会
+  </button>
+  <button class="nav-item" data-nav="learn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M4 5.5v16"/><path d="M8.5 8h7M8.5 11.5h5"/></svg>学习
+  </button>
+  <button class="nav-item" data-nav="records">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v6M9 20h6"/><path d="M8 3h8v5a4 4 0 0 1-8 0V3Z"/><path d="M8 5H5a3 3 0 0 0 3 6M16 5h3a3 3 0 0 1-3 6"/></svg>记录
+  </button>
+  <button class="nav-item" data-nav="reports">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg>周报
+  </button>
+  <button class="nav-item" data-nav="settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>设置
+  </button>
+</nav>
+
+<div class="modal-mask hidden" id="modalMask"><div class="modal" id="modalBox"></div></div>
+<div class="toast hidden" id="toast"></div>
+
+<script>
+/* ============================================================
+   AI妈妈 · 应用逻辑（自包含版）
+   - 服务器模式：优先调用后端 API（真实数据）
+   - 独立打开 / 预览模式：自动降级为内置演示数据，全功能可体验
+   ============================================================ */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
+let META = { platforms: [], counts: {} };
+// 在线演示版标记：发布为静态站点时置为 true（无后端，纯前端演示）
+const ONLINE_DEMO = !!window.AIMAMA_ONLINE_DEMO;
+let DEMO_MODE = ONLINE_DEMO;
+let STATE = { type:'all', sort:'', keyword:'', currentOpp:null };
+
+/* 品牌头像（简笔画长发女生），各处通过 use 引用 symbol */
+const MAMA_ICON = '<svg viewBox="0 0 140 140"><use href="#mama-face"/></svg>';
+
+/* ---------------- 演示数据（与服务器 seed 同源） ---------------- */
+function dOff(days) { const d = new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+function nowISO() { return new Date().toISOString(); }
+const DEMO_OPPS = [
+  { id:'op-flow-001', type:'flow', platform:'抖音', title:'中视频伙伴计划', summary:'发布 1 分钟以上横版视频，按有效播放量获得分成，可同步分发到西瓜视频。', reward:'按播放量分成，千次播放约 1~8 元', requirement:'视频时长 ≥1 分钟；横屏 16:9；原创；需完成实名认证', threshold:'账号需开通创作权益', deadline:dOff(180), sourceUrl:'https://creator.douyin.com/', confidence:'official', tags:['视频','长期'], aiComment:'姐妹，这是你的基本盘。要求低、长期有效，日常内容顺手发一份。', updatedAt:nowISO() },
+  { id:'op-flow-002', type:'flow', platform:'B站', title:'创作激励计划', summary:'加入创作激励后，稿件根据播放、互动等数据获得收益。', reward:'按综合数据结算，万播放约 15~30 元', requirement:'需通过创作激励申请（粉丝/播放达标）；原创稿件', threshold:'申请有门槛', deadline:dOff(365), sourceUrl:'https://member.bilibili.com/', confidence:'official', tags:['视频','长期'], aiComment:'门槛比抖音高，但单价好，适合放深度内容。', updatedAt:nowISO() },
+  { id:'op-flow-003', type:'flow', platform:'头条号', title:'图文 / 视频流量分成', summary:'发布原创图文或视频，根据阅读 / 播放量获得广告分成。', reward:'按阅读量与广告展示结算', requirement:'原创内容；开通「收益」权益', threshold:'需开通相应权益', deadline:dOff(365), sourceUrl:'https://mp.toutiao.com/', confidence:'official', tags:['图文','视频'], aiComment:'同一篇文案改个标题发过来，几乎是白捡的流量钱。', updatedAt:nowISO() },
+  { id:'op-flow-004', type:'flow', platform:'微信公众号', title:'流量主 + 原创赞赏', summary:'开通流量主后，文章底部广告与赞赏产生收益。', reward:'广告分成 + 读者赞赏', requirement:'原创声明；流量主需粉丝达标（通常 500 关注）', threshold:'粉丝门槛', deadline:dOff(365), sourceUrl:'https://mp.weixin.qq.com/', confidence:'official', tags:['图文'], aiComment:'粉丝到 500 就能开流量主，先攒粉。', updatedAt:nowISO() },
+  { id:'op-flow-005', type:'flow', platform:'微博', title:'微博流量分成 / 微任务', summary:'开通相关权益后，博文流量与商业任务均可变现。', reward:'流量分成 + 商单', requirement:'实名认证；开通对应权益', threshold:'部分权益需认证', deadline:dOff(365), sourceUrl:'https://weibo.com/', confidence:'official', tags:['图文'], aiComment:'微博看热点，适合短平快的内容。', updatedAt:nowISO() },
+  { id:'op-flow-006', type:'flow', platform:'快手', title:'创作者激励计划', summary:'发布原创短视频，按播放与互动数据获得激励收益。', reward:'按数据结算', requirement:'实名认证；原创；需加入激励计划', threshold:'需申请加入', deadline:dOff(365), sourceUrl:'https://cp.kuaishou.com/', confidence:'official', tags:['视频'], aiComment:'和抖音一稿两发，边际成本几乎为零。', updatedAt:nowISO() },
+  { id:'op-flow-007', type:'flow', platform:'小红书', title:'蒲公英 / 薯条投放与商单', summary:'粉丝达标后可接商单，或使用薯条推广笔记。', reward:'商单结算（差异大）', requirement:'需达到平台粉丝门槛（通常 1000 粉）', threshold:'粉丝门槛较高', deadline:dOff(365), sourceUrl:'https://pgy.xiaohongshu.com/', confidence:'pending', tags:['图文','待补充'], aiComment:'小红书公开信息少，你后台看到的活动可以手动补给我。', updatedAt:nowISO() },
+  { id:'op-flow-008', type:'flow', platform:'视频号', title:'视频号创作者激励计划', summary:'发布原创视频，按播放量与互动获得激励。', reward:'按数据结算', requirement:'需在后台申请；原创内容', threshold:'入口在创作者中心', deadline:dOff(365), sourceUrl:'https://channels.weixin.qq.com/', confidence:'pending', tags:['视频','待补充'], aiComment:'入口在后台、公开信息少，先挂着。', updatedAt:nowISO() },
+  { id:'op-prize-001', type:'prize', platform:'B站', title:'「夏日生活」主题视频征集大赛', summary:'围绕夏日生活方式创作视频，评选优秀作品发放奖金。', reward:'一等奖 5000 元 / 二等奖 2000 元 / 三等奖 500 元', requirement:'视频时长 1~5 分钟；带指定话题标签；原创首发；画面清晰', reviewDimensions:'创意 30% / 内容质量 30% / 播放互动 20% / 主题契合 20%', deadline:dOff(21), sourceUrl:'https://www.bilibili.com/', confidence:'official', tags:['视频','高奖金','截稿临近'], aiComment:'奖金实在，还有 3 周。你的生活类内容直接能投，冲。', updatedAt:nowISO() },
+  { id:'op-prize-002', type:'prize', platform:'头条号', title:'「我的副业故事」有奖征文', summary:'征集副业 / 兼职真实经历图文，优质稿件给予奖金与流量扶持。', reward:'优秀奖 1000 元 ×10 名，入选作品额外流量扶持', requirement:'字数 800~2000 字；真实经历；原创首发；需带话题', reviewDimensions:'真实感 35% / 可读性 30% / 信息价值 35%', deadline:dOff(14), sourceUrl:'https://mp.toutiao.com/', confidence:'official', tags:['图文','有奖金','截稿临近'], aiComment:'这个最适合你——把你的内容变现经历写出来就是完美选题。', updatedAt:nowISO() },
+  { id:'op-prize-003', type:'prize', platform:'微信公众号', title:'品牌命题创作大赛', summary:'某消费品牌命题征集图文 / 短视频内容，获奖作品用于品牌传播。', reward:'金奖 8000 元 / 银奖 3000 元 / 入围 800 元', requirement:'命题创作；图文或短视频均可；必须原创未发布；需授权品牌使用', reviewDimensions:'创意 40% / 品牌契合 30% / 传播潜力 30%', deadline:dOff(10), sourceUrl:'https://mp.weixin.qq.com/', confidence:'official', tags:['图文','视频','高奖金','截稿临近'], aiComment:'奖金最高，但要求「未发布」——注意别提前发到别的平台。', updatedAt:nowISO() },
+  { id:'op-prize-004', type:'prize', platform:'微博', title:'微博有奖话题创作大赛', summary:'带指定话题发布原创图文 / 视频，按互动数据评奖。', reward:'现金奖励 + 微博推荐资源', requirement:'带话题标签；原创；内容需正向', reviewDimensions:'互动数据 50% / 内容质量 30% / 创意 20%', deadline:dOff(7), sourceUrl:'https://weibo.com/', confidence:'official', tags:['图文','有奖金','截稿临近'], aiComment:'这个看互动，越早发越容易攒数据，建议今天就动。', updatedAt:nowISO() },
+  { id:'op-prize-005', type:'prize', platform:'小红书', title:'品牌笔记征集计划（后台）', summary:'品牌合作笔记征集，优质笔记给予现金奖励。信息多在后台。', reward:'按笔记质量分级奖励（通常 200~2000 元）', requirement:'粉丝门槛；带指定话题；通过后台接单', reviewDimensions:'官方未完全公开', deadline:dOff(30), sourceUrl:'https://pgy.xiaohongshu.com/', confidence:'pending', tags:['图文','有奖金','待补充'], aiComment:'妈妈抓不到后台数据，你截图发我，我帮你归档盯截止日。', updatedAt:nowISO() },
+  { id:'op-prize-006', type:'prize', platform:'抖音', title:'抖音全民任务征集', summary:'参与平台发布的创作任务，按内容质量与播放数据发放现金奖励。', reward:'任务制，单条 100~5000 元不等', requirement:'按任务要求创作；带指定话题；原创', reviewDimensions:'播放数据 40% / 内容质量 40% / 任务契合 20%', deadline:dOff(5), sourceUrl:'https://creator.douyin.com/', confidence:'official', tags:['视频','有奖金','截稿临近'], aiComment:'任务更新很快，每周来刷一次，挑播放数据好的冲。', updatedAt:nowISO() },
+  { id:'op-product-001', type:'product', platform:'闲鱼', title:'知识付费 / 资料包上架', summary:'把你的经验整理成文档 / 资料包，在闲鱼上架售卖。门槛最低。', reward:'按售价 × 销量（抽成极低）', requirement:'实名认证；商品合规；说明交付方式', priceRange:'常见定价 9.9~99 元', deadline:dOff(365), sourceUrl:'https://2.taobao.com/', confidence:'official', tags:['产品上架','低门槛'], aiComment:'新手试水首选。定价低、上架快，用来验证有没有人买。', updatedAt:nowISO() },
+  { id:'op-product-002', type:'product', platform:'小红书', title:'小红书知识付费 / 专栏', summary:'通过小红书店铺或专栏形式售卖课程 / 咨询 / 资料。', reward:'按销量结算', requirement:'需开店（有资质门槛）；内容合规', priceRange:'常见定价 29~399 元', deadline:dOff(365), sourceUrl:'https://www.xiaohongshu.com/', confidence:'official', tags:['产品上架','中门槛'], aiComment:'小红书付费意愿相对高，适合「轻咨询 + 资料」组合。', updatedAt:nowISO() },
+  { id:'op-product-003', type:'product', platform:'猪八戒', title:'服务型产品（技能变现）', summary:'把你的技能包装成「服务商品」，如文案代写、账号代运营、内容策划。', reward:'按订单结算（平台抽成）', requirement:'入驻需认证；需服务说明与报价', priceRange:'常见 100~5000 元/单', deadline:dOff(365), sourceUrl:'https://www.zbj.com/', confidence:'official', tags:['产品上架','服务'], aiComment:'把你「会做内容」这件事直接卖钱的地方。', updatedAt:nowISO() },
+  { id:'op-product-004', type:'product', platform:'抖音', title:'抖音知识付费 / 橱窗', summary:'通过抖音小店或知识付费功能售卖课程 / 资料，可挂载到视频。', reward:'按销量结算（平台抽成）', requirement:'需开店 / 开通知识付费权益；类目资质', priceRange:'常见定价 19~299 元', deadline:dOff(365), sourceUrl:'https://creator.douyin.com/', confidence:'official', tags:['产品上架','中门槛'], aiComment:'有流量基础的话，视频挂课程是转化最直接的路径。', updatedAt:nowISO() },
+  // 免费申样型
+  { id:'op-sample-001', type:'sample', platform:'抖音', title:'抖音精选联盟 · 免费申样', summary:'抖音电商「样品服务」：达人在选品广场申请商品样品，商家寄样，达人到货后拍视频带货。样品免费，但需按约完成推广交付。入口：抖音App → 电商带货 → 选品广场 → 筛选「免费样品」。', reward:'免费拿样品（价值不等）+ 带货佣金', requirement:'粉丝数 ≥ 5000；具备电商带货权限；作者等级 ≥ L1；带货口碑分 ≥ 4.2（商家可自设更高门槛）', threshold:{fansMin:5000,level:'L1',credit:'4.2'}, deadline:dOff(365), sourceUrl:'https://school.jinritemai.com/doudian/web/article/aHG6jMXt3rNb', confidence:'official', tags:['免费申样','有门槛','电商'], aiComment:'姐妹，这是抖音官方申样入口。硬门槛是 5000 粉 + L1 等级。不够的话可以走「买样返款」——先付样品成本，带货达标后全额退。', updatedAt:nowISO() },
+  { id:'op-sample-002', type:'sample', platform:'抖音', title:'抖音 · 买样返款（门槛不够时的备选）', summary:'当不满足商家免费申样门槛时，可先支付样品成本价拿到样品，按要求完成带货后，商家退还样品费用。相当于「先垫付、达标免单」。', reward:'达标后全额退还样品费 + 佣金', requirement:'无粉丝硬门槛，但需带货权限；确认收货 45 天内完成履约', threshold:{fansMin:0,level:'—',credit:'—'}, deadline:dOff(365), sourceUrl:'https://school.jinritemai.com/doudian/web/article/aHG6jMXt3rNb', confidence:'official', tags:['免费申样','零门槛','电商'], aiComment:'粉丝不够 5000 就走这条：先垫钱拿样品，带货达标退全款。相当于用一点点垫资换免费样品。', updatedAt:nowISO() },
+  { id:'op-sample-003', type:'sample', platform:'小红书', title:'小红书 · 好物体验站（0 元试用）', summary:'小红书的免费试用阵地：品牌发布体验名额，用户申请通过后免费寄样品，需在规定时间内发布体验笔记。适合中小博主积累内容素材。', reward:'免费样品 + 涨粉素材', requirement:'小红书实名账号；部分商品要求粉丝数 / 专业号，部分零门槛', threshold:{fansMin:0,level:'—',credit:'—'}, deadline:dOff(365), sourceUrl:'https://www.xiaohongshu.com/', confidence:'pending', tags:['免费申样','零门槛','笔记'], aiComment:'门槛相对低，适合刚起步的账号。申请通过后要按时发体验笔记，否则会影响后续中签率。', updatedAt:nowISO() },
+  { id:'op-sample-004', type:'sample', platform:'B站', title:'B站 · 悬赏计划 / 花火任务样品', summary:'B站 UP 主可通过花火平台接商单，部分任务包含免费寄样；此外「悬赏计划」也有商品推广任务，达标可获奖励。', reward:'免费样品 + 任务奖金', requirement:'花火需一定粉丝门槛（常见 1000+）；悬赏计划门槛较低', threshold:{fansMin:1000,level:'—',credit:'—'}, deadline:dOff(365), sourceUrl:'https://www.bilibili.com/', confidence:'pending', tags:['免费申样','有门槛','中长视频'], aiComment:'B站商单单价通常比抖音高，但要求内容质量也更硬。粉丝过千可以开始试花火。', updatedAt:nowISO() },
+  { id:'op-sample-005', type:'sample', platform:'快手', title:'快手 · 快分销样品申请', summary:'快手电商的分销选品体系，达人可在选品中心申请免费样品或购样返款，逻辑与抖音精选联盟类似。', reward:'免费样品 + 分销佣金', requirement:'开通快手小店带货权限；部分商品设粉丝门槛', threshold:{fansMin:0,level:'—',credit:'—'}, deadline:dOff(365), sourceUrl:'https://s.kwaixiaodian.com/', confidence:'pending', tags:['免费申样','有门槛','电商'], aiComment:'快手带货偏向实惠品类，申样竞争相对小一些，适合做生活类内容的姐妹。', updatedAt:nowISO() },
+  { id:'op-sample-006', type:'sample', platform:'微博', title:'微博 · 微任务 / 试用中心', summary:'微博的商单与试用体系，品牌会发布产品试用招募，通过后可免费获得样品，需按约定发布微博内容。', reward:'免费样品', requirement:'微博实名 + 一定活跃度；部分需粉丝门槛', threshold:{fansMin:0,level:'—',credit:'—'}, deadline:dOff(365), sourceUrl:'https://weibo.com/', confidence:'pending', tags:['免费申样','零门槛','图文'], aiComment:'微博试用更适合图文，门槛低，用来练手和攒图库不错。', updatedAt:nowISO() }
+];
+
+// 学习提升：精选经验帖索引（演示版）
+const DEMO_LESSONS = [
+  { id:'ls-001', topic:'涨粉', platform:'抖音', title:'抖音短视频运营技巧：让算法愿意把流量给你', summary:'系统讲透抖音的流量池机制：完播率是第一道门槛，互动数据决定能走多远。附选题、开头三秒、内容结构、发布时机的完整打法。', keyPoints:['完播率决定能否进下一级流量池，所以「前 3 秒必须抓住人」比什么都重要','选题优先级：情绪类 > 干货类 > 反常识类，情绪类天然完播高','内容结构用「钩子（0-3秒）— 价值（3秒到结尾）— 互动引导（结尾）」三段式','发布后 30 分钟是关键：先让评论区热闹起来，触发初始推荐'], sourceUrl:'https://www.jzl.com/news/douyin-32', sourceType:'article', confidence:'third_party', updatedAt:nowISO() },
+  { id:'ls-002', topic:'变现', platform:'小红书', title:'案例拆解：家居博主一篇爆款笔记涨粉 23 万，单月变现 12 万+', summary:'拆解真实爆款笔记的创作方法论：如何用「人群 + 场景差异化」切出细分赛道，如何用争议性话题撬动互动，封面标题的「3 秒吸引力法则」。', keyPoints:['爆款公式 = 精准人群 + 价值外显 + 情绪共鸣','封面要「价值外显」：数字量化（省下2万）、场景对比（改造前后）、高饱和配色','标题含数字的笔记平均点赞高 35%；用对比图的封面收藏率提升 50%','争议性选题（如「是不是智商税」）能引发站队，评论转发自然涨'], sourceUrl:'https://www.woshipm.com/operate/6214935.html', sourceType:'article', confidence:'third_party', updatedAt:nowISO() },
+  { id:'ls-003', topic:'选题', platform:'抖音', title:'抖音新手起号：从 0 到万赞的全套实战教程', summary:'面向新号的实操清单：避开「自杀式操作」，用封面和标题提升点击率，用互动率撬动流量池，以及抖+该不该投的判断标准。', keyPoints:['不要发搬运视频（触发去重判罚）、不要一爆就飘、不要频繁删视频重发','判断投抖+的硬标准：发布 2 小时后播放过 500 且点赞率 > 5%','完播率 < 30% 说明开头不够吸引人；点赞率 < 3% 说明选题缺共鸣','做「对标账号拆解表」：记录同领域爆款的封面色调、关键词、评论区问题'], sourceUrl:'https://www.nianxiangren.cn/post/46415.html', sourceType:'article', confidence:'third_party', updatedAt:nowISO() },
+  { id:'ls-004', topic:'内容质量', platform:'通用', title:'搞定这些，你的视频也能火（拍摄与结构细节）', summary:'从「黄金3秒」到打光、BGM、节奏控制的具体技巧，讲的是同样内容为什么别人拍出来数据更好。', keyPoints:['打光口诀：正面补光显肤质，侧光勾勒轮廓，逆光慎用（除非要剪影）','一分钟视频要有 2-3 个情绪或信息爆点，剪辑时把停顿和语气词全剪掉','BGM 不是背景是灵魂：高潮部分要对应最核心的画面或文案重点','算法本质只认两样东西：完播率和互动率，其余都是为它服务'], sourceUrl:'https://www.daweiyingshi.com/a/zhishi/2840.html', sourceType:'article', confidence:'third_party', updatedAt:nowISO() },
+  { id:'ls-005', topic:'发布技巧', platform:'抖音', title:'抖音发布技巧：让播放量更高的细节', summary:'聚焦「发布」这一个环节：什么时间发、标签怎么打、封面怎么选、发布后 30 分钟做什么。', keyPoints:['标签用「1 大 + 2 细 + 1 热点」，总数控制在 3-5 个，标签太杂算法分不清领域','发布时间：早 6-9 点、午 12-14 点、晚 18-22 点；进阶看「创作者中心-粉丝活跃度」','标题 15 字内带关键词，让用户点进来前就知道能得到什么','保持账号垂直，别今天做美妆明天做游戏，否则流量分散'], sourceUrl:'http://tazi.net.cn/index.php?a=shows&catid=32&id=1001', sourceType:'article', confidence:'third_party', updatedAt:nowISO() },
+  { id:'ls-006', topic:'变现', platform:'小红书', title:'小红书种草怎么赚钱：从接单到建立自己模式的真实经历', summary:'一个普通博主从 0 粉到月入 5 万的完整路径：如何靠「场景+痛点」写爆款，如何接第一个商单，如何被平台打上优质创作者标签。', keyPoints:['爆款逻辑：不讲参数讲场景（「加班到凌晨靠这个键盘续命」），评论区全是求链接','一条爆款视频能让账号被算法打上「优质创作者」标签，之后基础流量翻几倍','粉丝过 5 万后品牌会主动找上门，第一个正式商单报价通常 3000 元起','借势热点要快：新品发布当天出内容，配合真实对比图，容易起量'], sourceUrl:'http://www.yituidy.com/xhs/show1726.html', sourceType:'article', confidence:'third_party', updatedAt:nowISO() }
+];
+const DEMO_STATE = {
+  records: [], reports: [],
+  settings: { subscribedPlatforms:['抖音','小红书','视频号','头条号','微信公众号','B站','微博','快手'], notifyEmail:false, email:'', notifyRedDot:true, theme:null },
+  contents: [],
+  aiConfig: { provider:'deepseek', baseUrl:'', model:'', key:'' },
+  mailConfig: { provider:'qq', user:'', to:'', passSet:false }
+};
+
+/* 演示模式下的 AI / 邮件配置摘要（与后端 describe* 结构保持一致） */
+const DEMO_PROVIDERS = [
+  { id:'deepseek', name:'DeepSeek', baseUrl:'https://api.deepseek.com/v1', model:'deepseek-chat', applyUrl:'https://platform.deepseek.com/api_keys', note:'性价比高，中文写作能力好，适合文案改写' },
+  { id:'dashscope', name:'通义千问（阿里云百炼）', baseUrl:'https://dashscope.aliyuncs.com/compatible-mode/v1', model:'qwen-plus', applyUrl:'https://bailian.console.aliyun.com/', note:'有免费额度，qwen-plus 综合表现稳' },
+  { id:'moonshot', name:'Kimi（月之暗面）', baseUrl:'https://api.moonshot.cn/v1', model:'moonshot-v1-8k', applyUrl:'https://platform.moonshot.cn/console/api-keys', note:'长文本理解强，适合长文评估' },
+  { id:'zhipu', name:'智谱 GLM', baseUrl:'https://open.bigmodel.cn/api/paas/v4', model:'glm-4-flash', applyUrl:'https://open.bigmodel.cn/usercenter/apikeys', note:'glm-4-flash 有免费额度' },
+  { id:'openai', name:'OpenAI', baseUrl:'https://api.openai.com/v1', model:'gpt-4o-mini', applyUrl:'https://platform.openai.com/api-keys', note:'需要海外网络环境' }
+];
+const DEMO_MAIL_PRESETS = [
+  { id:'qq', label:'QQ 邮箱', host:'smtp.qq.com', port:465, secure:true, help:'设置→账户→开启 IMAP/SMTP 服务，用 16 位授权码' },
+  { id:'163', label:'网易 163', host:'smtp.163.com', port:465, secure:true, help:'设置→POP3/SMTP/IMAP，开启 SMTP，用授权码' },
+  { id:'outlook', label:'Outlook', host:'smtp.office365.com', port:587, secure:false, help:'使用应用密码' },
+  { id:'gmail', label:'Gmail', host:'smtp.gmail.com', port:465, secure:true, help:'需应用专用密码' }
+];
+function demoAiConfig() {
+  const c = DEMO_STATE.aiConfig;
+  const p = DEMO_PROVIDERS.find(x=>x.id===c.provider) || DEMO_PROVIDERS[0];
+  return {
+    enabled: !!(c.key && (c.baseUrl||p.baseUrl) && (c.model||p.model)),
+    provider: c.provider, providerName: p.name,
+    baseUrl: c.baseUrl || p.baseUrl, model: c.model || p.model,
+    keyMasked: c.key ? c.key.slice(0,5)+'****'+c.key.slice(-4) : '',
+    providers: DEMO_PROVIDERS
+  };
+}
+function demoMailConfig() {
+  const c = DEMO_STATE.mailConfig;
+  const p = DEMO_MAIL_PRESETS.find(x=>x.id===c.provider) || DEMO_MAIL_PRESETS[0];
+  return {
+    enabled: !!(c.user && c.to && c.passSet),
+    host:p.host, port:p.port, secure:p.secure, user:c.user, to:c.to,
+    provider:c.provider, providerLabel:p.label, help:p.help, passSet:c.passSet,
+    presets: DEMO_MAIL_PRESETS
+  };
+}
+
+/* ---------------- 统一 API 层：服务器优先，失败降级演示，恢复自动切回 ---------------- */
+function enableDemo() {
+  if (!DEMO_MODE) {
+    DEMO_MODE = true;
+  }
+  const chip = $('#demoChip');
+  if (chip) {
+    chip.classList.remove('hidden');
+    chip.textContent = ONLINE_DEMO ? '在线演示版' : '演示数据';
+    chip.title = ONLINE_DEMO
+      ? '这是在线预览版：机会库/学习/申样可浏览；AI评估、打卡记录、邮件周报需在电脑本地运行完整版'
+      : '当前未连接后端服务，展示的是内置样本数据；连上服务器后会自动切回真实数据';
+  }
+  const sub = $('#brandSub');
+  if (sub) sub.textContent = '女性内容创作者的变现管家';
+}
+
+/** 从演示模式恢复：切回真实数据并重新加载当前页 */
+function exitDemo() {
+  DEMO_MODE = false;
+  const chip = $('#demoChip');
+  if (chip) chip.classList.add('hidden');
+  try { toast('已连接服务器，已切换到真实数据'); } catch (e) {}
+  // 找出当前显示的页面并重新加载它
+  try {
+    const cur = Array.from($$('.page')).find(p => !p.classList.contains('hidden'));
+    if (cur && cur.id && cur.id.indexOf('page-') === 0) {
+      nav(cur.id.slice(5));
+    } else {
+      loadHome();
+    }
+  } catch (e) {}
+}
+
+async function api(path, options = {}) {
+  if (ONLINE_DEMO) return demoApi(path, options);
+  // API 基址：默认同源；静态托管分离部署时通过 window.AIMAMA_API_BASE 指向云托管地址
+  const API_BASE = window.AIMAMA_API_BASE || '';
+  // 演示模式下不「锁死」：每次请求都先试真实服务器，失败才用演示数据。
+  // 这样手机第一次打开偶发的网络慢不会让整个会话一直停留在演示数据上。
+  try {
+    const res = await fetch(API_BASE + '/api' + path, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options,
+      body: options.body ? JSON.stringify(options.body) : undefined
+    });
+    let data;
+    try { data = await res.json(); } catch (pe) {
+      // 返回的不是 JSON（多半是打不开文件/离线）→ 降级演示模式
+      enableDemo();
+      return demoApi(path, options);
+    }
+    if (!data.ok) {
+      // 业务失败：把后端给的真实原因带出去
+      const err = new Error(data.error || data.result?.error || '请求失败');
+      err.business = true;
+      err.payload = data;
+      throw err;
+    }
+    if (DEMO_MODE) exitDemo();   // 服务器恢复了 → 自动切回真实数据
+    return data;
+  } catch (e) {
+    if (e && e.business) throw e;              // 业务错误，原样抛出，不弹通用 toast
+    const msg = e && e.message ? e.message : '';
+    if (e instanceof TypeError || /fetch|JSON|Unexpected|parse/i.test(msg)) {
+      enableDemo();
+      return demoApi(path, options);
+    }
+    throw e;
+  }
+}
+
+/* 演示模式端点实现 */
+function demoApi(path, options = {}) {
+  const [route, qs] = path.replace(/^\//, '').split('?');
+  const params = new URLSearchParams(qs || '');
+  const body = options.body || {};
+  const S = DEMO_STATE;
+
+  if (route === 'meta') {
+    const counts = { all:DEMO_OPPS.length,
+      flow:DEMO_OPPS.filter(o=>o.type==='flow').length,
+      prize:DEMO_OPPS.filter(o=>o.type==='prize').length,
+      product:DEMO_OPPS.filter(o=>o.type==='product').length,
+      sample:DEMO_OPPS.filter(o=>o.type==='sample').length };
+    return Promise.resolve({ ok:true, platforms:[...new Set(DEMO_OPPS.map(o=>o.platform))], counts });
+  }
+  if (route === 'opportunities') {
+    let list = DEMO_OPPS.slice();
+    const q = Object.fromEntries(params);
+    if (q.type && q.type!=='all') list = list.filter(o=>o.type===q.type);
+    if (q.platform && q.platform!=='all') list = list.filter(o=>o.platform===q.platform);
+    if (q.keyword) { const k=q.keyword.toLowerCase(); list=list.filter(o=>(o.title+o.summary+o.platform+(o.tags||[]).join()).toLowerCase().includes(k)); }
+    if (q.sort==='deadline') list.sort((a,b)=>a.deadline.localeCompare(b.deadline));
+    if (q.sort==='reward') list.sort((a,b)=>rewardValue(b)-rewardValue(a));
+    return Promise.resolve({ ok:true, total:list.length, list });
+  }
+  if (route.startsWith('opportunities/')) {
+    const item = DEMO_OPPS.find(o=>o.id===route.split('/')[1]);
+    return item ? Promise.resolve({ ok:true, item }) : Promise.reject(new Error('未找到该机会'));
+  }
+  if (route === 'settings') {
+    if (options.method === 'PUT') {
+      Object.assign(S.settings, body);
+      try{ localStorage.setItem('aimama_demo_settings', JSON.stringify(S.settings)); }catch(e){}
+    }
+    return Promise.resolve({ ok:true, settings:S.settings });
+  }
+  if (route === 'records') {
+    if (options.method === 'POST') {
+      const opp = DEMO_OPPS.find(o=>o.id===body.opportunityId);
+      if (!opp) return Promise.reject(new Error('机会不存在'));
+      const rec = { id:'rec-'+Date.now().toString(36), opportunityId:opp.id, kind:body.kind||(opp.type==='prize'?'submission':'signup'), title:opp.title, platform:opp.platform, type:opp.type, deadline:opp.deadline, status:'ongoing', draft:body.draft||'', createdAt:nowISO() };
+      S.records.unshift(rec);
+      return Promise.resolve({ ok:true, record:rec });
+    }
+    return Promise.resolve({ ok:true, list:S.records });
+  }
+  if (route.startsWith('records/')) {
+    const id = route.split('/')[1];
+    if (options.method === 'PUT') {
+      const rec = S.records.find(r=>r.id===id);
+      if (!rec) return Promise.reject(new Error('记录不存在'));
+      Object.assign(rec, body);
+      return Promise.resolve({ ok:true, record:rec });
+    }
+    if (options.method === 'DELETE') {
+      S.records = S.records.filter(r=>r.id!==id);
+      return Promise.resolve({ ok:true });
+    }
+  }
+  if (route === 'reports') return Promise.resolve({ ok:true, list:S.reports });
+  if (route === 'reports/generate') {
+    const d = new Date();
+    const week = d.getFullYear()+'-W'+String(getWeekNumber(d)).padStart(2,'0');
+    const urgent = DEMO_OPPS.filter(o=>daysLeft(o.deadline)>=0&&daysLeft(o.deadline)<=14).sort((a,b)=>daysLeft(a.deadline)-daysLeft(b.deadline));
+    const high = DEMO_OPPS.filter(o=>o.type==='prize').sort((a,b)=>rewardValue(b)-rewardValue(a)).slice(0,3);
+    const rep = { id:'rp-'+Date.now().toString(36), week, createdAt:nowISO(),
+      totalCount:DEMO_OPPS.length,
+      counts:{ flow:DEMO_OPPS.filter(o=>o.type==='flow').length, prize:DEMO_OPPS.filter(o=>o.type==='prize').length, product:DEMO_OPPS.filter(o=>o.type==='product').length },
+      urgentIds:urgent.slice(0,6).map(o=>o.id), highPrizeIds:high.map(o=>o.id),
+      headline:(urgent.length?urgent.length+' 个机会即将截稿，':'')+'最高奖金 '+(rewardValue(high[0])||0)+' 元',
+      aiComment:'姐妹，'+(urgent.length?'有 '+urgent.length+' 个活动快截止了，先处理这些；':'')+'「'+(high[0]?high[0].title:'无')+'」奖金最高，值得优先考虑。' };
+    S.reports.unshift(rep);
+    return Promise.resolve({ ok:true, report:rep });
+  }
+  if (route === 'ai/evaluate') {
+    if (!body.text || !String(body.text).trim()) return Promise.reject(new Error('请先粘贴你的文案'));
+    const opp = DEMO_OPPS.find(o=>o.id===body.opportunityId);
+    if (!opp) return Promise.reject(new Error('机会不存在'));
+    return Promise.resolve({ ok:true, evaluation: evaluateFit(opp, String(body.text)) });
+  }
+  if (route === 'ai/rewrite') {
+    if (!body.text || !String(body.text).trim()) return Promise.reject(new Error('请先粘贴你的文案'));
+    const opp = DEMO_OPPS.find(o=>o.id===body.opportunityId);
+    if (!opp) return Promise.reject(new Error('机会不存在'));
+    return Promise.resolve({ ok:true, rewritten: rewriteFor(opp, String(body.text)) });
+  }
+  if (route === 'ai/productize') {
+    if (!body.text || !String(body.text).trim()) return Promise.reject(new Error('请先粘贴你的文案'));
+    return Promise.resolve({ ok:true, analysis: analyzeProductize(String(body.text)) });
+  }
+  if (route === 'ai/conflict') {
+    const opp = DEMO_OPPS.find(o=>o.id===body.opportunityId) || null;
+    const conflicts=[];
+    if (opp && /首发|未发布|独家/.test((opp.requirement||'')+(opp.reviewDimensions||''))) {
+      conflicts.push({ type:'first_release', message:'「'+opp.title+'」要求首发/未发布，若你同时把内容发到其他平台或上架售卖，可能失去资格' });
+    }
+    return Promise.resolve({ ok:true, conflicts:conflicts, risks:[], tip:'', source:'rule', engine:'本地规则引擎' });
+  }
+  if (route === 'ai/config') {
+    if (options.method === 'PUT') {
+      const b = body || {};
+      if (b.aiProvider) S.aiConfig.provider = b.aiProvider;
+      if (b.aiBaseUrl) S.aiConfig.baseUrl = b.aiBaseUrl;
+      if (b.aiModel) S.aiConfig.model = b.aiModel;
+      if (b.aiApiKey) S.aiConfig.key = b.aiApiKey;
+      if (b.clearKey) S.aiConfig.key = '';
+      try{ localStorage.setItem('aimama_demo_aiconfig', JSON.stringify(S.aiConfig)); }catch(e){}
+    }
+    return Promise.resolve({ ok:true, config: demoAiConfig() });
+  }
+  if (route === 'ai/test') {
+    return Promise.resolve({ ok:false, result:{ ok:false, error:'演示模式（直接打开 HTML 文件）无法连接模型。请通过 node server.js 启动后再配置。' } });
+  }
+  if (route === 'mail/config') {
+    if (options.method === 'PUT') {
+      const b = body || {};
+      if (b.smtpUser) S.mailConfig.user = b.smtpUser;
+      if (b.email) S.mailConfig.to = b.email;
+      if (b.smtpPass) S.mailConfig.passSet = true;
+      if (b.smtpProvider) S.mailConfig.provider = b.smtpProvider;
+      try{ localStorage.setItem('aimama_demo_mailconfig', JSON.stringify(S.mailConfig)); }catch(e){}
+    }
+    return Promise.resolve({ ok:true, config: demoMailConfig() });
+  }
+  if (route === 'mail/test' || route === 'mail/send-report') {
+    return Promise.reject(new Error('演示模式无法真正发信。请通过 node server.js 启动后再配置邮箱。'));
+  }
+  if (route === 'contents') return Promise.resolve({ ok:true, list:S.contents });
+  if (route === 'lessons') {
+    let list = DEMO_LESSONS.slice();
+    const tp = params.get('topic'), kw = params.get('keyword');
+    if (tp && tp !== 'all') list = list.filter(l => l.topic === tp);
+    if (kw) { const k = kw.toLowerCase(); list = list.filter(l => (l.title+l.summary+(l.keyPoints||[]).join('')).toLowerCase().includes(k)); }
+    return Promise.resolve({ ok:true, total:list.length, topics:[...new Set(DEMO_LESSONS.map(l=>l.topic))], list });
+  }
+  return Promise.reject(new Error('接口不存在'));
+}
+
+/* ---------------- 工具 ---------------- */
+function rewardValue(o) { const m=String(o.reward||'').match(/(\d[\d,]*)/); return m?parseInt(m[1].replace(/,/g,''),10)||0:0; }
+function daysLeft(deadline) { if(!deadline) return 9999; const d=new Date(deadline+'T23:59:59'); return Math.ceil((d-new Date())/86400000); }
+function typeName(t){ return {flow:'流量分成',prize:'投稿评奖',product:'产品上架',sample:'免费申样'}[t]||t; }
+function typeBadgeClass(t){ return {flow:'badge-flow',prize:'badge-prize',product:'badge-product',sample:'badge-sample'}[t]; }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function getWeekNumber(d){ const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())); const dayNum=date.getUTCDay()||7; date.setUTCDate(date.getUTCDate()+4-dayNum); const y=new Date(Date.UTC(date.getUTCFullYear(),0,1)); return Math.ceil(((date-y)/86400000+1)/7); }
+function toast(msg, ms) {
+  const t=$('#toast'); ms=ms||2200; t.textContent=msg; t.classList.remove('hidden');
+  clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.add('hidden'),ms);
+}
+
+/* ---------------- 路由 ---------------- */
+function nav(page) {
+  $$('.page').forEach(p=>p.classList.add('hidden'));
+  const el=$('#page-'+page);
+  if (el) el.classList.remove('hidden');
+  $$('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.nav===page));
+  window.scrollTo({top:0});
+  if (page==='home') loadHome();
+  if (page==='list') loadList();
+  if (page==='learn') loadLearn();
+  if (page==='records') loadRecords();
+  if (page==='reports') loadReports();
+  if (page==='settings') loadSettings();
+}
+function showPage(html) {
+  $$('.page').forEach(p=>p.classList.add('hidden'));
+  $('#page-detail').classList.remove('hidden');
+  $('#page-detail').innerHTML=html;
+  window.scrollTo({top:0});
+}
+
+/* ---------------- 首页 ---------------- */
+async function loadHome() {
+  $('#homeList').innerHTML=skeleton(3);
+  try {
+    const results=await Promise.all([api('/meta'), api('/opportunities?sort=deadline')]);
+    META=results[0]; const list=results[1].list;
+    $('#statRow').innerHTML=
+      '<div class="stat"><div class="stat-num">'+META.counts.all+'</div><div class="stat-label">全部机会</div></div>'+
+      '<div class="stat"><div class="stat-num">'+META.counts.prize+'</div><div class="stat-label">投稿评奖</div></div>'+
+      '<div class="stat"><div class="stat-num">'+(META.counts.sample||0)+'</div><div class="stat-label">免费申样</div></div>';
+    const urgent=list.filter(o=>daysLeft(o.deadline)<=21&&daysLeft(o.deadline)>=0);
+    $('#mamaBubble').innerHTML=urgent.length
+      ? '姐妹，本周有 <b>'+urgent.length+'</b> 个机会快截止了。最急的是「'+escapeHtml(urgent[0].title)+'」，还剩 <b>'+daysLeft(urgent[0].deadline)+'</b> 天，先看这个。'
+      : '姐妹，本周机会都在列表里，慢慢挑。';
+    $('#brandSub').textContent = '女性内容创作者的变现管家';
+    $('#homeList').innerHTML=list.slice(0,6).map(cardHtml).join('');
+    bindCards();
+  } catch(e) { $('#homeList').innerHTML=emptyHtml('😵','加载失败，请稍后重试'); }
+}
+function cardHtml(o) {
+  const dl=daysLeft(o.deadline);
+  const urgent=dl>=0&&dl<=14;
+  return '<div class="card type-'+o.type+'" data-id="'+o.id+'">'+
+    '<div class="card-top">'+
+      '<span class="platform">'+escapeHtml(o.platform)+'</span>'+
+      '<span class="badge '+typeBadgeClass(o.type)+'">'+typeName(o.type)+'</span>'+
+      (urgent?'<span class="badge badge-urgent">⏳ 剩 '+dl+' 天</span>':'')+
+    '</div>'+
+    '<div class="card-title">'+escapeHtml(o.title)+'</div>'+
+    '<div class="card-summary">'+escapeHtml(o.summary)+'</div>'+
+    '<div class="card-reward"><span class="coin">¥</span>'+escapeHtml(o.reward)+'</div>'+
+    '<div class="card-foot"><span>截止 '+(o.deadline||'长期')+'</span><span>'+(o.confidence==='official'?'✓ 官方来源':'⚠ 待确认')+'</span></div>'+
+    '<div class="card-comment"><span class="mini-avatar">'+MAMA_ICON+'</span><span>'+escapeHtml(o.aiComment)+'</span></div>'+
+  '</div>';
+}
+function skeleton(n){ return Array.from({length:n}).map(function(){return '<div class="skeleton"></div>';}).join(''); }
+function emptyHtml(emoji,txt){ return '<div class="empty"><div class="emoji">'+emoji+'</div><div class="txt">'+escapeHtml(txt)+'</div></div>'; }
+function bindCards(){ $$('.card[data-id]').forEach(c=>c.onclick=()=>openDetail(c.dataset.id)); }
+
+/* ---------------- 列表 ---------------- */
+async function loadList() {
+  $('#listResult').innerHTML=skeleton(4);
+  try {
+    const p=new URLSearchParams();
+    if (STATE.type!=='all') p.set('type',STATE.type);
+    if (STATE.sort) p.set('sort',STATE.sort);
+    if (STATE.keyword) p.set('keyword',STATE.keyword);
+    const res=await api('/opportunities?'+p.toString());
+    if (!res.list.length) { $('#listResult').innerHTML=emptyHtml('🔍','没有找到匹配的机会，换个关键词试试'); return; }
+    $('#listResult').innerHTML=res.list.map(cardHtml).join('');
+    bindCards();
+  } catch(e) { $('#listResult').innerHTML=emptyHtml('😵','加载失败，请稍后重试'); }
+}
+
+/* ---------------- 详情 ---------------- */
+function kv(k,v){ return '<div class="kv"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'; }
+async function openDetail(id) {
+  showPage(skeleton(3));
+  try {
+    const data=await api('/opportunities/'+id);
+    const o=data.item;
+    STATE.currentOpp=o;
+    const dl=daysLeft(o.deadline);
+    const rows=[];
+    rows.push(kv('平台',escapeHtml(o.platform)));
+    rows.push(kv('类型',typeName(o.type)));
+    rows.push(kv('收益',escapeHtml(o.reward)));
+    if (o.priceRange) rows.push(kv('参考定价',escapeHtml(o.priceRange)));
+    // 门槛：兼容字符串（旧）与对象（新，申样类）
+    if (o.threshold) {
+      if (typeof o.threshold === 'object') {
+        const parts = [];
+        if (o.threshold.fansMin) parts.push('粉丝 ≥ '+o.threshold.fansMin);
+        if (o.threshold.level && o.threshold.level !== '—') parts.push('等级 ≥ '+o.threshold.level);
+        if (o.threshold.credit && o.threshold.credit !== '—') parts.push('口碑分 ≥ '+o.threshold.credit);
+        rows.push(kv('申请门槛', parts.length ? escapeHtml(parts.join(' · ')) : '基本无门槛'));
+      } else {
+        rows.push(kv('门槛',escapeHtml(o.threshold)));
+      }
+    }
+    rows.push(kv('要求',escapeHtml(o.requirement)));
+    if (o.reviewDimensions) rows.push(kv('评审维度',escapeHtml(o.reviewDimensions)));
+    rows.push(kv('截止',(o.deadline||'长期有效')+(dl<9000?'<span class="'+(dl<=7?'days-urgent':'')+'">（剩 '+dl+' 天）</span>':'')));
+
+    showPage(
+      '<button class="back-btn" onclick="nav(\'list\')">‹ 返回列表</button>'+
+      '<div class="detail-head">'+
+        '<div class="card-top">'+
+          '<span class="platform">'+escapeHtml(o.platform)+'</span>'+
+          '<span class="badge '+typeBadgeClass(o.type)+'">'+typeName(o.type)+'</span>'+
+          (dl>=0&&dl<=14?'<span class="badge badge-urgent">⏳ 剩 '+dl+' 天</span>':'')+
+        '</div>'+
+        '<div class="detail-title">'+escapeHtml(o.title)+'</div>'+
+      '</div>'+
+      '<div class="mama-card"><div class="mama-avatar">'+MAMA_ICON+'</div><div class="mama-bubble">'+escapeHtml(o.aiComment)+'</div></div>'+
+      '<div class="detail-block"><h3>活动说明</h3><p>'+escapeHtml(o.summary)+'</p></div>'+
+      '<div class="detail-block"><h3>关键信息</h3>'+rows.join('')+'</div>'+
+      '<div class="detail-block"><h3>信息来源</h3>'+
+        kv('链接','<a href="'+escapeHtml(o.sourceUrl)+'" target="_blank" rel="noopener">'+escapeHtml(o.sourceUrl)+'</a>')+
+        kv('更新于',new Date(o.updatedAt).toLocaleString('zh-CN'))+
+        kv('可信度',o.confidence==='official'?'✓ 官方公开信息':'⚠ 待确认，建议去后台核实')+
+      '</div>'+
+      '<div id="conflictBox"></div>'+
+      (o.type==='sample' ? '<div id="sampleCheck"></div>' : '')+
+      '<button class="btn" id="actBtn"></button>'+
+      '<button class="btn btn-ghost" id="toolBtn"></button>'+
+      '<button class="btn btn-ghost" id="sourceBtn">🔗 去官方页面自行操作</button>'+
+      '<div class="note">妈妈不会代你登录或代你提交，所有提交动作都由你本人在官方页面完成。</div>'
+    );
+    const actBtn=$('#actBtn');
+    // 主按钮：参加并打卡（四种类型统一入口）
+    actBtn.textContent='✍️ 参加并打卡';
+    if (o.type==='flow') actBtn.onclick=()=>startSignup(o);
+    else actBtn.onclick=()=>quickCheckin(o);
+    // 次按钮：该类型的专属工具
+    const toolBtn=$('#toolBtn');
+    if (o.type==='prize') { toolBtn.textContent='📝 先评估我的文案获奖胜算'; toolBtn.onclick=()=>openEvaluate(o.id); }
+    else if (o.type==='product') { toolBtn.textContent='💡 先分析能否做成付费产品'; toolBtn.onclick=()=>openProductize(o.id); }    else if (o.type==='sample') { toolBtn.textContent='📋 查看申样材料清单'; toolBtn.onclick=()=>startSignup(o); }
+    else { toolBtn.textContent='📋 查看报名材料清单'; toolBtn.onclick=()=>startSignup(o); }
+    $('#sourceBtn').onclick=()=>{ window.open(o.sourceUrl,'_blank'); toast('已打开官方页面'); };
+    // 申样类：渲染门槛自检卡
+    if (o.type==='sample') renderSampleCheck(o);
+    checkConflict(o);
+  } catch(e) { showPage(emptyHtml('😵','加载失败')); }
+}
+
+/* 免费申样：申请资格自检（让姐妹一眼知道够不够得着） */
+function renderSampleCheck(o) {
+  const box = $('#sampleCheck');
+  if (!box) return;
+  const t = (typeof o.threshold === 'object') ? o.threshold : {};
+  const fansMin = t.fansMin || 0;
+  if (!fansMin) {
+    box.innerHTML = '<div class="warn-box" style="background:rgba(74,222,128,.10);border-color:rgba(74,222,128,.28)">✅ <b>基本无粉丝门槛</b><br>这类申样大多不卡粉丝数，实名账号即可尝试，适合起步阶段。</div>';
+    return;
+  }
+  box.innerHTML =
+    '<div class="warn-box">🔍 <b>申请资格自检</b><br>'+
+      '这个渠道要求 <b>粉丝 ≥ '+fansMin+'</b>'+(t.level&&t.level!=='—'?'、等级 ≥ '+t.level:'')+(t.credit&&t.credit!=='—'?'、口碑分 ≥ '+t.credit:'')+'。<br>'+
+      '请对照你自己的账号核对——<b>够得着就申，够不着就走「买样返款」或先涨粉</b>。妈妈不替你判断，只把门槛摆明。'+
+    '</div>';
+}
+
+async function checkConflict(o) {
+  try {
+    const data=await api('/records');
+    const active=data.list.filter(r=>r.status!=='ended');
+    const conflicts=[];
+    for (const r of active) {
+      if (r.opportunityId===o.id) continue;
+      try {
+        const d2=await api('/opportunities/'+r.opportunityId);
+        if (/首发|未发布|独家/.test((d2.item.requirement||'')+(d2.item.reviewDimensions||''))) conflicts.push(d2.item);
+      } catch(e){}
+    }
+    const needsFirst=/首发|未发布|独家/.test((o.requirement||'')+(o.reviewDimensions||''));
+    let html='';
+    if (needsFirst) html+='<div class="warn-box">🚨 <b>首发提醒</b><br>这个活动要求<b>首发 / 未发布</b>。妈妈提醒：别把这篇内容先发到其他平台，否则可能失去资格。</div>';
+    if (conflicts.length) html+='<div class="warn-box">🚨 <b>冲突提醒</b><br>你已参加的「'+escapeHtml(conflicts[0].title)+'」要求首发/未发布。同一份内容不要多渠道使用，妈妈先帮你盯着。</div>';
+    const box=$('#conflictBox');
+    if (box) box.innerHTML=html;
+  } catch(e){}
+}
+
+/* ---------------- 快速参加并打卡 ---------------- */
+async function quickCheckin(o) {
+  try {
+    const res = await api('/records',{method:'POST',body:{opportunityId:o.id}});
+    toast('已打卡，记入「我的记录」✅');
+    nav('records');
+    // 跳到记录页后，自动打开这条的打卡弹窗，顺手填进度
+    setTimeout(()=>openCheckin(res.record.id), 400);
+  } catch(e) { toast(e.message||'操作失败'); }
+}
+
+/* ---------------- 流量分成报名 ---------------- */
+function startSignup(o) {
+  showPage(
+    '<button class="back-btn" onclick="openDetail(\''+o.id+'\')">‹ 返回详情</button>'+
+    '<div class="detail-title" style="margin-top:6px">报名材料清单</div>'+
+    '<div class="mama-card" style="margin-top:14px"><div class="mama-avatar">'+MAMA_ICON+'</div><div class="mama-bubble">要准备的东西妈妈列好了，照着准备就行。</div></div>'+
+    '<div class="detail-block"><h3>你需要准备</h3>'+
+      kv('1','完成账号实名认证')+
+      kv('2','开通对应创作 / 收益权益')+
+      kv('3','准备原创作品：'+escapeHtml(o.requirement))+
+      kv('4','确认内容未在其他平台首发（避免资格冲突）')+
+    '</div>'+
+    '<button class="btn" id="goSource">🔗 去官方页面完成报名</button>'+
+    '<button class="btn btn-ghost" id="markJoined">✍️ 我已参加，打卡记录</button>'+
+    '<div class="note">妈妈只能帮你准备材料，不能代你登录，最后一步由你本人完成。</div>'
+  );
+  $('#goSource').onclick=()=>window.open(o.sourceUrl,'_blank');
+  $('#markJoined').onclick=async()=>{
+    try {
+      const res=await api('/records',{method:'POST',body:{opportunityId:o.id,kind:'signup'}});
+      toast('已打卡 ✅'); nav('records');
+      setTimeout(()=>openCheckin(res.record.id), 400);
+    } catch(e) { toast(e.message||'操作失败'); }
+  };
+}
+
+/* ---------------- 投稿评估 ---------------- */
+function openEvaluate(id) {
+  const o=STATE.currentOpp;
+  showPage(
+    '<button class="back-btn" onclick="openDetail(\''+id+'\')">‹ 返回详情</button>'+
+    '<div class="detail-title" style="margin-top:6px">投稿前，妈妈帮你看看胜算</div>'+
+    '<div class="mama-card" style="margin-top:14px"><div class="mama-avatar">'+MAMA_ICON+'</div><div class="mama-bubble">把你要投的文案贴进来，妈妈对照活动要求逐条帮你看：哪里达标、哪里是硬伤、怎么改能加分。</div></div>'+
+    '<div class="detail-block"><h3>活动要求</h3>'+
+      kv('要求',escapeHtml(o.requirement))+
+      (o.reviewDimensions?kv('评审维度',escapeHtml(o.reviewDimensions)):'')+
+    '</div>'+
+    '<textarea id="evalText" placeholder="在这里粘贴你的文案全文…"></textarea>'+
+    '<button class="btn" id="doEval">🔍 开始评估</button>'+
+    '<div id="evalResult"></div>'
+  );
+  $('#doEval').onclick=async()=>{
+    const text=$('#evalText').value.trim();
+    if (!text) return toast('请先粘贴你的文案');
+    $('#evalResult').innerHTML='<div style="margin-top:16px">'+skeleton(2)+'</div>';
+    try {
+      const data=await api('/ai/evaluate',{method:'POST',body:{opportunityId:id,text:text}});
+      renderEvaluation(data.evaluation,text,id);
+    } catch(e) { $('#evalResult').innerHTML=emptyHtml('😵','评估失败：'+e.message); }
+  };
+}
+function engineBadge(source, engine, reason) {
+  if (source === 'ai') {
+    return '<div class="engine-chip ai">✨ 由大模型分析 · '+escapeHtml(engine||'AI')+'</div>';
+  }
+  return '<div class="engine-chip rule">⚙️ 本地规则引擎'+(reason?'<span class="why">'+escapeHtml(reason)+'</span>':'')+'</div>';
+}
+function renderEvaluation(ev,text,id) {
+  const bars=ev.items.map(it=>
+    '<div class="score-row">'+
+      '<div class="score-name">'+escapeHtml(it.name)+'</div>'+
+      '<div class="score-bar"><div class="score-fill" style="width:0%" data-w="'+it.score+'"></div></div>'+
+      '<div class="score-val">'+it.score+'</div>'+
+    '</div>'+
+    '<div class="score-note">'+escapeHtml(it.note)+'</div>'
+  ).join('');
+  const sug=ev.suggestions.map(s=>kv('•',escapeHtml(s))).join('');
+  const risk=ev.risks.map(s=>kv('⚠️',escapeHtml(s))).join('');
+  $('#evalResult').innerHTML=
+    engineBadge(ev.source, ev.engine, ev.fallbackReason)+
+    '<div class="detail-block" style="margin-top:12px"><div class="big-score">'+
+      '<div class="num" id="scoreNum">0</div><div class="verdict">'+escapeHtml(ev.verdict)+'</div>'+
+    '</div></div>'+
+    '<div class="detail-block"><h3>逐条对照</h3>'+bars+'</div>'+
+    '<div class="detail-block"><h3>改进建议</h3>'+sug+'</div>'+
+    '<div class="detail-block"><h3>风险提示</h3>'+risk+'</div>'+
+    '<button class="btn" id="doRewrite">✍️ 按活动要求帮我改一版</button>'+
+    '<div id="rewriteBox"></div>'+
+    '<div class="note">'+escapeHtml(ev.disclaimer)+'</div>';
+  animateScore(ev.total);
+  requestAnimationFrame(function(){ $$('.score-fill').forEach(function(b){ b.style.width=b.dataset.w+'%'; }); });
+  $('#doRewrite').onclick=async()=>{
+    $('#rewriteBox').innerHTML='<div style="margin-top:12px">'+skeleton(2)+'</div>';
+    try {
+      const data=await api('/ai/rewrite',{method:'POST',body:{opportunityId:id,text:text}});
+      const rewritten=data.rewritten;
+      $('#rewriteBox').innerHTML=
+        '<div class="section-head"><h2 style="font-size:15px">原稿 vs 改写稿</h2></div>'+
+        engineBadge(data.source, data.engine, data.fallbackReason)+
+        '<div class="compare">'+
+          '<div class="compare-col"><h4>原稿（保留不动）</h4><div class="txt">'+escapeHtml(text)+'</div></div>'+
+          '<div class="compare-col new"><h4>✨ 改写稿（已按活动要求优化）</h4><div class="txt">'+escapeHtml(rewritten)+'</div></div>'+
+        '</div>'+
+        '<button class="btn btn-ghost" id="copyRw">📋 复制改写稿</button>'+
+        '<button class="btn" id="markSubmitted">✓ 我已完成投稿，记录一下</button>'+
+        '<div class="note">原稿已保留，不会被覆盖。你可以继续手动微调改写稿。</div>';
+      $('#copyRw').onclick=()=>navigator.clipboard.writeText(rewritten).then(()=>toast('改写稿已复制'),()=>toast('复制失败，请长按手动复制'));
+      $('#markSubmitted').onclick=async()=>{
+        await api('/records',{method:'POST',body:{opportunityId:id,kind:'submission',draft:rewritten}});
+        toast('已记入「我的记录」'); nav('records');
+      };
+    } catch(e) { $('#rewriteBox').innerHTML=emptyHtml('😵','改写失败：'+e.message); }
+  };
+}
+function animateScore(target) {
+  const el=$('#scoreNum'); if (!el) return;
+  const dur=900, start=performance.now();
+  function step(t) {
+    const p=Math.min(1,(t-start)/dur);
+    const eased=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*eased);
+    if (p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ---------------- 产品化分析 ---------------- */
+function openProductize(o) {
+  showPage(
+    '<button class="back-btn" onclick="openDetail(\''+o.id+'\')">‹ 返回详情</button>'+
+    '<div class="detail-title" style="margin-top:6px">能不能做成付费产品？妈妈帮你看</div>'+
+    '<div class="mama-card" style="margin-top:14px"><div class="mama-avatar">'+MAMA_ICON+'</div><div class="mama-bubble">把你的文案贴进来，妈妈分析产品化潜力、能卖多少钱、上哪个平台。</div></div>'+
+    '<textarea id="pdText" placeholder="在这里粘贴你的文案…"></textarea>'+
+    '<button class="btn" id="doProductize">💡 分析一下</button>'+
+    '<div id="pdResult"></div>'
+  );
+  $('#doProductize').onclick=async()=>{
+    const text=$('#pdText').value.trim();
+    if (!text) return toast('请先粘贴你的文案');
+    $('#pdResult').innerHTML='<div style="margin-top:16px">'+skeleton(2)+'</div>';
+    try {
+      const data=await api('/ai/productize',{method:'POST',body:{text:text}});
+      const a=data.analysis;
+      $('#pdResult').innerHTML=
+        engineBadge(a.source, a.engine, a.fallbackReason)+
+        '<div class="detail-block" style="margin-top:12px"><div class="big-score">'+
+          '<div class="num">'+a.potential+'</div><div class="verdict">'+escapeHtml(a.verdict)+'</div>'+
+        '</div>'+kv('建议定价',escapeHtml(a.priceSuggestion))+'</div>'+
+        '<div class="detail-block"><h3>判断依据</h3>'+a.reasons.map(r=>kv('•',escapeHtml(r))).join('')+'</div>'+
+        (a.firstStep?kv('🚀 第一步',escapeHtml(a.firstStep)):'')+
+        '<div class="detail-block"><h3>推荐上架平台</h3>'+a.recommendPlatforms.map(p=>kv(escapeHtml(p.name),escapeHtml(p.reason))).join('')+'</div>'+
+        '<div class="detail-block"><h3>产品大纲建议</h3>'+a.outline.map((t,i)=>kv(String(i+1),escapeHtml(t))).join('')+'</div>'+
+        '<div class="note">'+escapeHtml(a.disclaimer)+'</div>';
+    } catch(e) { $('#pdResult').innerHTML=emptyHtml('😵','分析失败'); }
+  };
+}
+
+/* ---------------- 学习提升 ---------------- */
+let LEARN_STATE = { topic:'all', keyword:'' };
+async function loadLearn() {
+  $('#learnList').innerHTML=skeleton(3);
+  try {
+    const qs = new URLSearchParams();
+    if (LEARN_STATE.topic && LEARN_STATE.topic!=='all') qs.set('topic', LEARN_STATE.topic);
+    if (LEARN_STATE.keyword) qs.set('keyword', LEARN_STATE.keyword);
+    const data = await api('/lessons'+(qs.toString()?'?'+qs:''));
+    window._lessons = data.list || [];
+    // 主题标签（首次加载时生成）
+    if (data.topics && $('#learnTabs').children.length <= 1) {
+      $('#learnTabs').innerHTML =
+        '<button class="tab active" data-topic="all">全部</button>'+
+        data.topics.map(t=>'<button class="tab" data-topic="'+t+'">'+t+'</button>').join('');
+      bindLearnTabs();
+    }
+    if (!window._lessons.length) {
+      $('#learnList').innerHTML=emptyHtml('📚','没有匹配的内容，换个词试试～'); return;
+    }
+    $('#learnList').innerHTML = window._lessons.map(l=>{
+      const srcLabel = l.confidence==='official' ? '✓ 官方' : '📄 第三方整理';
+      return '<div class="card">'+
+        '<div class="card-top">'+
+          '<span class="platform">'+escapeHtml(l.platform)+'</span>'+
+          '<span class="badge badge-prize">'+escapeHtml(l.topic)+'</span>'+
+          '<span class="badge '+(l.confidence==='official'?'badge-product':'badge-flow')+'">'+srcLabel+'</span>'+
+        '</div>'+
+        '<div class="card-title">'+escapeHtml(l.title)+'</div>'+
+        '<div class="card-summary">'+escapeHtml(l.summary)+'</div>'+
+        '<div style="margin:12px 0 4px;font-size:12.5px;font-weight:700;color:var(--brand-2)">📌 妈妈提炼的要点</div>'+
+        '<div style="display:flex;flex-direction:column;gap:8px">'+
+          (l.keyPoints||[]).map((p,i)=>
+            '<div style="display:flex;gap:9px;font-size:13px;line-height:1.65;color:var(--text-dim)">'+
+              '<span style="flex:0 0 18px;height:18px;border-radius:6px;background:var(--grad);color:#221002;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px">'+(i+1)+'</span>'+
+              '<span>'+escapeHtml(p)+'</span>'+
+            '</div>'
+          ).join('')+
+        '</div>'+
+        '<button class="btn btn-ghost" style="margin-top:14px" onclick="window.open(\''+escapeHtml(l.sourceUrl)+'\',\'_blank\')">🔗 去看原文</button>'+
+        '<div class="note">内容为原站链接索引，版权归原作者，妈妈只做要点提炼。</div>'+
+      '</div>';
+    }).join('');
+  } catch(e) { $('#learnList').innerHTML=emptyHtml('😵','加载失败，请稍后重试'); }
+}
+function bindLearnTabs() {
+  $$('#learnTabs .tab').forEach(t=>{
+    t.onclick=()=>{
+      $$('#learnTabs .tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      LEARN_STATE.topic = t.dataset.topic;
+      loadLearn();
+    };
+  });
+}
+
+/* ---------------- 记录（打卡进度看板） ---------------- */
+// 状态机定义（按机会类型给不同的阶段名）
+const STEP_FLOW = [
+  { k:'checked_in', t:'已报名' },
+  { k:'published',  t:'已发布' },
+  { k:'earning',    t:'产生收益' },
+  { k:'done',       t:'已完成' }
+];
+const STEP_PRIZE = [
+  { k:'checked_in', t:'已投稿' },
+  { k:'reviewing',  t:'评审中' },
+  { k:'rewarded',   t:'已获奖' },
+  { k:'done',       t:'已完成' }
+];
+const STEP_PRODUCT = [
+  { k:'checked_in', t:'已准备' },
+  { k:'listed',     t:'已上架' },
+  { k:'earning',    t:'已出单' },
+  { k:'done',       t:'已完成' }
+];
+function stepsFor(type) {
+  if (type==='prize') return STEP_PRIZE;
+  if (type==='product') return STEP_PRODUCT;
+  return STEP_FLOW;
+}
+const STATUS_LABEL = {
+  checked_in:'已参加', published:'已发布', reviewing:'评审中',
+  rewarded:'已获奖', earning:'有收益', listed:'已上架', done:'已完成',
+  // 兼容旧数据
+  ongoing:'进行中', submitted:'已投稿', won:'已中奖', ended:'已结束'
+};
+const STATUS_CLS = {
+  checked_in:'status-ongoing', published:'status-submitted', reviewing:'status-submitted',
+  rewarded:'status-won', earning:'status-won', listed:'status-submitted', done:'status-ended',
+  ongoing:'status-ongoing', submitted:'status-submitted', won:'status-won', ended:'status-ended'
+};
+// 生成进度步骤条
+function renderSteps(r) {
+  const steps = stepsFor(r.type);
+  const cur = steps.findIndex(s => s.k === r.status);
+  // 旧状态映射到新状态的位置
+  let curIdx = cur;
+  if (curIdx < 0) {
+    const legacy = { ongoing:0, submitted:1, won:2, ended:3 };
+    curIdx = legacy[r.status] !== undefined ? legacy[r.status] : 0;
+  }
+  return '<div class="rec-steps">'+ steps.map((s,i)=>{
+    const cls = i < curIdx ? 'done' : (i === curIdx ? 'cur' : '');
+    return '<div class="rec-step '+cls+'">'+
+      '<div class="dot">'+(i < curIdx ? '✓' : (i===curIdx?'●':''))+'</div>'+
+      '<div class="lbl">'+s.t+'</div>'+
+    '</div>';
+  }).join('') +'</div>';
+}
+// 生成成果数字卡（按类型显示不同指标）
+function renderMetrics(r) {
+  const m = r.metrics || {};
+  const cards = [];
+  const money = v => '¥'+Number(v).toLocaleString('zh-CN');
+  const num = v => Number(v).toLocaleString('zh-CN');
+  if (r.type === 'flow') {
+    if (m.views != null) cards.push(['mv','', num(m.views), '播放 / 阅读']);
+    if (m.income != null) cards.push(['mv hi','', money(m.income), '累计收益']);
+  } else if (r.type === 'prize') {
+    if (m.prize != null) cards.push(['mv hi','', money(m.prize), '获得奖金']);
+    if (m.income != null) cards.push(['mv','', money(m.income), '其他收益']);
+  } else {
+    if (m.sales != null) cards.push(['mv','', num(m.sales), '销量']);
+    if (m.revenue != null) cards.push(['mv hi','', money(m.revenue), '销售额']);
+  }
+  // 通用：收益兜底
+  if (!cards.length && m.income != null) cards.push(['mv hi','', money(m.income), '收益']);
+  if (!cards.length) return '';
+  return '<div class="rec-metrics">'+ cards.map(c=>
+    '<div class="rec-metric"><div class="'+c[0]+' '+c[1]+'">'+c[2]+'</div><div class="ml">'+c[3]+'</div></div>'
+  ).join('') +'</div>';
+}
+async function loadRecords() {
+  $('#recordList').innerHTML=skeleton(2);
+  try {
+    const data=await api('/records');
+    const list=data.list;
+    window._records=list;
+    if (!list.length) { $('#recordList').innerHTML=emptyHtml('📋','还没有打卡记录。去机会列表里挑一个，点「参加并打卡」吧～'); return; }
+
+    // 顶部汇总
+    const totalIncome = list.reduce((s,r)=>s+(Number((r.metrics||{}).income)||0)+(Number((r.metrics||{}).prize)||0)+(Number((r.metrics||{}).revenue)||0),0);
+    const wonCount = list.filter(r=>r.status==='rewarded'||r.status==='won').length;
+    const activeCount = list.filter(r=>r.status!=='done'&&r.status!=='ended').length;
+    let html =
+      '<div class="rec-summary">'+
+        '<div class="sm"><div class="n">¥'+totalIncome.toLocaleString('zh-CN')+'</div><div class="t">累计收益</div></div>'+
+        '<div class="sm"><div class="n">'+wonCount+'</div><div class="t">获奖次数</div></div>'+
+        '<div class="sm"><div class="n">'+activeCount+'</div><div class="t">进行中</div></div>'+
+      '</div>';
+
+    html += list.map(r=>{
+      const dl=daysLeft(r.deadline);
+      return '<div class="rec-card">'+
+        '<div class="rec-head">'+
+          '<span class="platform">'+escapeHtml(r.platform)+'</span>'+
+          '<span class="badge '+typeBadgeClass(r.type)+'">'+typeName(r.type)+'</span>'+
+          '<span class="status '+(STATUS_CLS[r.status]||'status-ongoing')+'">'+(STATUS_LABEL[r.status]||r.status)+'</span>'+
+        '</div>'+
+        '<div class="rec-title">'+escapeHtml(r.title)+'</div>'+
+        renderSteps(r)+
+        renderMetrics(r)+
+        (r.note?'<div class="card-comment"><span>📝</span><span>'+escapeHtml(r.note)+'</span></div>':'')+
+        '<div class="rec-actions">'+
+          '<button class="btn-mini primary" onclick="openCheckin(\''+r.id+'\')">✍️ 打卡更新</button>'+
+          (r.draft?'<button class="btn-mini" onclick="viewDraft(\''+r.id+'\')">📄 草稿</button>':'')+
+          '<button class="btn-mini" onclick="viewHistory(\''+r.id+'\')">🕘 记录</button>'+
+          '<button class="btn-mini" style="color:var(--danger)" onclick="delRecord(\''+r.id+'\')">删除</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+    $('#recordList').innerHTML=html;
+  } catch(e) { $('#recordList').innerHTML=emptyHtml('😵','加载失败'); }
+}
+
+/* ---------------- 打卡弹窗 ---------------- */
+function openCheckin(id) {
+  const r=window._records.find(x=>x.id===id);
+  if (!r) return;
+  const steps = stepsFor(r.type);
+  const m = r.metrics || {};
+  // 根据机会类型决定展示哪些成果字段
+  let metricFields = '';
+  const f = (key,label,ph) => '<label>'+label+'</label><input type="number" min="0" step="0.01" id="ci_'+key+'" placeholder="'+ph+'" value="'+(m[key]!=null?m[key]:'')+'">';
+  if (r.type==='flow') {
+    metricFields = f('views','播放量 / 阅读量','例如 12000') + f('income','累计收益（元）','例如 86.5');
+  } else if (r.type==='prize') {
+    metricFields = f('prize','获得奖金（元）','未获奖可留空') + f('income','其他收益（元）','选填');
+  } else {
+    metricFields = f('sales','销量（件 / 份）','例如 12') + f('revenue','销售额（元）','例如 588');
+  }
+  showModal(
+    '<h3>打卡更新</h3>'+
+    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px">'+escapeHtml(r.title)+'</div>'+
+    '<div class="ci-form">'+
+      '<label>当前进度</label>'+
+      '<div class="ci-status-grid" id="ciStatus">'+
+        steps.map(s=>'<div class="st-chip'+(s.k===r.status?' on':'')+'" data-k="'+s.k+'">'+s.t+'</div>').join('')+
+      '</div>'+
+      metricFields+
+      '<label>备注（选填）</label>'+
+      '<input type="text" id="ci_note" placeholder="例如：已发布，等数据" value="'+escapeHtml(r.note||'')+'">'+
+    '</div>'+
+    '<button class="btn" id="ciSave" style="margin-top:16px">保存打卡</button>'+
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button>'
+  );
+  // 状态选择交互
+  let picked = r.status;
+  $$('#ciStatus .st-chip').forEach(chip=>{
+    chip.onclick=()=>{
+      picked = chip.dataset.k;
+      $$('#ciStatus .st-chip').forEach(c=>c.classList.remove('on'));
+      chip.classList.add('on');
+    };
+  });
+  $('#ciSave').onclick=async()=>{
+    const body = {
+      status: picked,
+      metrics: {
+        views: $('#ci_views') ? $('#ci_views').value : null,
+        income: $('#ci_income') ? $('#ci_income').value : null,
+        prize: $('#ci_prize') ? $('#ci_prize').value : null,
+        sales: $('#ci_sales') ? $('#ci_sales').value : null,
+        revenue: $('#ci_revenue') ? $('#ci_revenue').value : null
+      },
+      note: $('#ci_note').value.trim()
+    };
+    try {
+      await api('/records/'+id+'/checkin',{method:'POST',body:body});
+      closeModal(); toast('打卡成功 ✅'); loadRecords();
+    } catch(e) { toast(e.message||'打卡失败'); }
+  };
+}
+// 打卡历史
+function viewHistory(id) {
+  const r=window._records.find(x=>x.id===id);
+  if (!r) return;
+  const hist = r.checkins || [];
+  if (!hist.length) { showModal('<h3>打卡记录</h3><p style="color:var(--text-dim);font-size:13px">还没有打卡记录。</p><button class="btn btn-ghost" onclick="closeModal()">关闭</button>'); return; }
+  const money=v=>'¥'+Number(v).toLocaleString('zh-CN');
+  const rows = hist.map(h=>{
+    const parts=[];
+    if (h.metrics) {
+      if (h.metrics.views!=null) parts.push('播放 '+h.metrics.views);
+      if (h.metrics.income!=null) parts.push('收益 '+money(h.metrics.income));
+      if (h.metrics.prize!=null) parts.push('奖金 '+money(h.metrics.prize));
+      if (h.metrics.sales!=null) parts.push('销量 '+h.metrics.sales);
+      if (h.metrics.revenue!=null) parts.push('销售额 '+money(h.metrics.revenue));
+    }
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="font-size:12px;color:var(--text-faint)">'+new Date(h.at).toLocaleString('zh-CN')+'</div>'+
+      '<div style="font-size:13.5px;margin-top:3px"><b>'+(STATUS_LABEL[h.status]||h.status)+'</b>'+(parts.length?' · '+parts.join(' · '):'')+'</div>'+
+      (h.note?'<div style="font-size:12.5px;color:var(--text-dim);margin-top:3px">'+escapeHtml(h.note)+'</div>':'')+
+    '</div>';
+  }).join('');
+  showModal('<h3>打卡记录</h3><div style="max-height:50vh;overflow-y:auto">'+rows+'</div><button class="btn btn-ghost" onclick="closeModal()" style="margin-top:14px">关闭</button>');
+}
+function viewDraft(id) {
+  const r=window._records.find(x=>x.id===id);
+  showModal('<h3>我的草稿</h3><div style="font-size:13px;white-space:pre-wrap;max-height:50vh;overflow-y:auto;line-height:1.8">'+escapeHtml(r.draft)+'</div><button class="btn btn-ghost" onclick="closeModal()">关闭</button>');
+}
+async function changeStatus(id,status) {
+  await api('/records/'+id,{method:'PUT',body:{status:status}});
+  toast('已更新'); loadRecords();
+}
+function delRecord(id) {
+  showModal('<h3>确认删除？</h3><p>删除后该记录无法恢复。</p>'+
+    '<button class="btn btn-danger" id="cfmDel">确认删除</button>'+
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button>');
+  $('#cfmDel').onclick=async()=>{ await api('/records/'+id,{method:'DELETE'}); closeModal(); toast('已删除'); loadRecords(); };
+}
+
+/* ---------------- 周报 ---------------- */
+async function loadReports() {
+  $('#reportList').innerHTML=skeleton(2);
+  try {
+    const data=await api('/reports');
+    const list=data.list;
+    if (!list.length) { $('#reportList').innerHTML=emptyHtml('📊','还没有周报。点右上角「生成本周周报」试试～'); return; }
+    const d2=await api('/opportunities');
+    const map={}; d2.list.forEach(o=>map[o.id]=o);
+    $('#reportList').innerHTML=list.map(rp=>{
+      const urgent=(rp.urgentIds||[]).map(id=>map[id]).filter(Boolean);
+      const high=(rp.highPrizeIds||[]).map(id=>map[id]).filter(Boolean);
+      return '<div class="list-item">'+
+        '<div class="li-top"><span class="badge badge-prize">'+escapeHtml(rp.week)+'</span><span class="card-foot">'+new Date(rp.createdAt).toLocaleDateString('zh-CN')+'</span></div>'+
+        '<div class="card-title">'+escapeHtml(rp.headline)+'</div>'+
+        '<div class="mama-card" style="margin:12px 0"><div class="mama-avatar">'+MAMA_ICON+'</div><div class="mama-bubble">'+escapeHtml(rp.aiComment)+'</div></div>'+
+        '<div class="card-foot" style="margin-bottom:10px"><span>流量分成 '+rp.counts.flow+'</span><span>投稿评奖 '+rp.counts.prize+'</span><span>产品上架 '+rp.counts.product+'</span></div>'+
+        '<h3 style="font-size:11.5px;color:var(--text-faint);letter-spacing:1.5px;margin:12px 0 6px">⏰ 即将截止</h3>'+
+        (urgent.map(o=>'<div class="kv" style="cursor:pointer" onclick="openDetail(\''+o.id+'\')"><span class="k">'+escapeHtml(o.platform)+'</span><span class="v">'+escapeHtml(o.title)+'（剩 '+daysLeft(o.deadline)+' 天）</span></div>').join('')||'<div class="note" style="padding:4px 0">暂无</div>')+
+        '<h3 style="font-size:11.5px;color:var(--text-faint);letter-spacing:1.5px;margin:14px 0 6px">💰 高奖金机会</h3>'+
+        (high.map(o=>'<div class="kv" style="cursor:pointer" onclick="openDetail(\''+o.id+'\')"><span class="k">'+escapeHtml(o.platform)+'</span><span class="v">'+escapeHtml(o.title)+'</span></div>').join('')||'<div class="note" style="padding:4px 0">暂无</div>')+
+      '</div>';
+    }).join('');
+  } catch(e) { $('#reportList').innerHTML=emptyHtml('😵','加载失败'); }
+}
+
+/* ---------------- 设置 ---------------- */
+async function loadSettings() {
+  const data=await api('/settings');
+  const settings=data.settings;
+  const allPlatforms=['抖音','小红书','视频号','头条号','微信公众号','B站','微博','快手'];
+  const subbed=settings.subscribedPlatforms||allPlatforms;
+  $('#settingsBox').innerHTML=
+    '<div class="setting-item setting-col">'+
+      '<div><div class="setting-label">订阅平台</div><div class="setting-desc">选中的平台会出现在你的周报里</div></div>'+
+      '<div class="platform-chips" id="chips">'+
+        allPlatforms.map(p=>'<span class="chip '+(subbed.indexOf(p)>=0?'on':'')+'" data-p="'+p+'">'+p+'</span>').join('')+
+      '</div>'+
+    '</div>'+
+    '<div class="setting-item">'+
+      '<div><div class="setting-label">邮件周报提醒</div><div class="setting-desc">每周一 09:00 给你发一封机会汇总</div></div>'+
+      '<div class="switch '+(settings.notifyEmail?'on':'')+'" id="swEmail"></div>'+
+    '</div>'+
+    '<div class="setting-item">'+
+      '<div><div class="setting-label">提醒邮箱</div><div class="setting-desc">用于接收周报（可选）</div></div>'+
+      '<input class="setting-input" id="emailInput" placeholder="your@email.com" value="'+escapeHtml(settings.email||'')+'">'+
+    '</div>'+
+    '<div class="setting-item">'+
+      '<div><div class="setting-label">站内红点提醒</div><div class="setting-desc">打开首页时提示新机会</div></div>'+
+      '<div class="switch '+(settings.notifyRedDot?'on':'')+'" id="swRedDot"></div>'+
+    '</div>'+
+    '<div id="aiEngineBox"></div>'+
+    '<div id="mailPushBox"></div>'+
+    '<div class="setting-item">'+
+      '<div><div class="setting-label">深色主题</div><div class="setting-desc">深色护眼，适合长时间看数据</div></div>'+
+      '<div class="switch '+(document.documentElement.getAttribute('data-theme')==='dark'?'on':'')+'" id="swTheme"></div>'+
+    '</div>'+
+    '<div class="detail-block" style="margin-top:16px"><h3>关于 AI妈妈</h3>'+
+      '<div style="text-align:center;padding:8px 0 14px">'+
+        '<div style="width:96px;height:96px;border-radius:28px;background:#171e33;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(239,79,48,.4);position:relative">'+
+          '<svg viewBox="0 0 140 140" style="width:88%;height:88%;color:rgba(255,255,255,.18);position:relative;z-index:1"><use href="#mama-face"/></svg>'+
+        '</div>'+
+        '<div style="font-size:24px;font-weight:800;letter-spacing:2px;margin-top:12px;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">AI妈妈</div>'+
+      '</div>'+
+      '<p style="font-size:13px;color:var(--text-dim);line-height:1.9">'+
+        'AI妈妈 v1.2 · 女性内容创作者的变现管家<br>'+
+        '盯住全网流量变现 / 投稿评奖 / 产品上架机会，<br>'+
+        '评估文案获奖胜算，按活动要求帮你改写。<br><br>'+
+        '🔒 妈妈不会保存你的任何平台账号密码，不会代你登录或提交。'+
+      '</p>'+
+    '</div>';
+  const saveChips=async()=>{
+    const sel=Array.from($$('#chips .chip.on')).map(c=>c.dataset.p);
+    await api('/settings',{method:'PUT',body:{subscribedPlatforms:sel}});
+  };
+  $$('#chips .chip').forEach(c=>c.onclick=()=>{ c.classList.toggle('on'); saveChips(); });
+  const bindSwitch=(sel,key)=>{
+    const el=$(sel);
+    el.onclick=async()=>{ el.classList.toggle('on'); await api('/settings',{method:'PUT',body:(()=>{const b={};b[key]=el.classList.contains('on');return b;})()}); toast('已保存'); };
+  };
+  bindSwitch('#swEmail','notifyEmail');
+  bindSwitch('#swRedDot','notifyRedDot');
+  $('#swTheme').onclick=async()=>{
+    $('#swTheme').classList.toggle('on');
+    const theme=$('#swTheme').classList.contains('on')?'dark':'light';
+    setTheme(theme);
+    await api('/settings',{method:'PUT',body:{theme:theme}});
+  };
+  $('#emailInput').onchange=async(e)=>{ await api('/settings',{method:'PUT',body:{email:e.target.value.trim()}}); toast('邮箱已保存'); };
+  renderAiEngineBox();
+  renderMailPushBox();
+}
+
+/* ---------------- 设置：AI 引擎 ---------------- */
+async function renderAiEngineBox() {
+  const box=$('#aiEngineBox'); if (!box) return;
+  let c;
+  try { c=(await api('/ai/config')).config; } catch(e){ box.innerHTML=''; return; }
+  const status = c.enabled
+    ? '<div class="ai-status on">✨ 已接入大模型：'+escapeHtml(c.providerName)+' · '+escapeHtml(c.model)+'　密钥 '+escapeHtml(c.keyMasked)+'</div>'
+    : '<div class="ai-status off">⚙️ 当前用本地规则引擎 —— 评估和改写能跑，但深度有限。<br>填一个大模型 Key，效果立刻升级。</div>';
+  box.innerHTML=
+    '<div class="detail-block" style="margin-top:16px"><h3>AI 引擎（评估 / 改写 / 产品化）</h3>'+
+      status+
+      '<div class="engine-pick" id="enginePick">'+
+        c.providers.map(p=>'<div class="ep '+(p.id===c.provider?'on':'')+'" data-id="'+p.id+'">'+
+          '<div class="n">'+escapeHtml(p.name)+'</div>'+
+          '<div class="d">'+escapeHtml(p.model)+'　'+escapeHtml(p.note||'')+'</div>'+
+        '</div>').join('')+
+      '</div>'+
+      '<div class="setting-item setting-col" style="border:none;padding:6px 0">'+
+        '<input class="setting-input" id="aiKeyInput" type="password" placeholder="粘贴 API Key（'+escapeHtml(c.keyMasked||'sk-...')+'）" autocomplete="off">'+
+      '</div>'+
+      '<div class="setting-item setting-col" style="border:none;padding:6px 0">'+
+        '<div class="setting-desc" style="margin-bottom:6px">接口地址（一般不用改）</div>'+
+        '<input class="setting-input" id="aiBaseInput" placeholder="https://api.deepseek.com/v1" value="'+escapeHtml(c.baseUrl||'')+'">'+
+      '</div>'+
+      '<div class="setting-item setting-col" style="border:none;padding:6px 0">'+
+        '<div class="setting-desc" style="margin-bottom:6px">模型名（一般不用改）</div>'+
+        '<input class="setting-input" id="aiModelInput" placeholder="deepseek-chat" value="'+escapeHtml(c.model||'')+'">'+
+      '</div>'+
+      '<button class="btn" id="aiSaveBtn">💾 保存配置</button>'+
+      '<button class="btn btn-ghost" id="aiTestBtn">🔌 测试连接</button>'+
+      (c.enabled?'<button class="btn btn-ghost" id="aiClearBtn">🗑 清除 Key</button>':'')+
+      '<div id="aiTestResult"></div>'+
+      '<div class="guide-box">'+
+        '<b>怎么拿到 Key？</b>'+
+        '<ol>'+
+        '<li>去对应服务商官网注册（点下面链接直达）</li>'+
+        '<li>在「API Keys / 密钥管理」里新建一个 Key，复制下来</li>'+
+        '<li>粘贴到上面的输入框，点「保存」，再点「测试连接」</li>'+
+        '</ol>'+
+        '<div style="margin-top:9px">常用入口：'+
+          c.providers.map(p=>'<a href="'+escapeHtml(p.applyUrl)+'" target="_blank" rel="noopener" style="margin-right:10px">'+escapeHtml(p.name)+' →</a>').join('')+
+        '</div>'+
+        '<div style="margin-top:9px">🔒 Key 只存在你自己电脑的 <code>data/settings.json</code> 里，妈妈不会上传到任何地方。</div>'+
+      '</div>'+
+    '</div>';
+
+  let pick=c.provider;
+  $$('#enginePick .ep').forEach(el=>{
+    el.onclick=()=>{
+      $$('#enginePick .ep').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      pick=el.dataset.id;
+      const p=c.providers.find(x=>x.id===pick);
+      if (p) { $('#aiBaseInput').value=p.baseUrl; $('#aiModelInput').value=p.model; }
+    };
+  });
+  $('#aiSaveBtn').onclick=async()=>{
+    const body={ aiProvider:pick, aiBaseUrl:$('#aiBaseInput').value.trim(), aiModel:$('#aiModelInput').value.trim() };
+    const k=$('#aiKeyInput').value.trim();
+    if (k) body.aiApiKey=k;
+    try { await api('/ai/config',{method:'PUT',body:body}); toast('AI 配置已保存'); renderAiEngineBox(); }
+    catch(e){ toast(e.message||'保存失败'); }
+  };
+  $('#aiTestBtn').onclick=async()=>{
+    const r=$('#aiTestResult'); r.innerHTML='<div class="engine-chip rule">⏳ 正在连接模型…</div>';
+    try {
+      const d=await api('/ai/test',{method:'POST'});
+      r.innerHTML = d.ok
+        ? '<div class="ai-status on">✅ 连接成功！模型：'+escapeHtml(d.result.model)+'　耗时 '+d.result.latency+'ms　回复：'+escapeHtml(d.result.reply)+'</div>'
+        : '<div class="ai-status off">❌ 连接失败：'+escapeHtml(d.result.error||'未知错误')+'</div>';
+    } catch(e){
+      const msg = e.payload?.result?.error || e.payload?.error || e.message || '测试失败';
+      r.innerHTML='<div class="ai-status off">❌ '+escapeHtml(msg)+'</div>';
+    }
+  };
+  const cb=$('#aiClearBtn');
+  if (cb) cb.onclick=async()=>{
+    await api('/ai/config',{method:'PUT',body:{aiApiKey:'',clearKey:true}});
+    toast('已清除 Key，回到本地规则引擎'); renderAiEngineBox();
+  };
+}
+
+/* ---------------- 设置：邮箱推送 ---------------- */
+async function renderMailPushBox() {
+  const box=$('#mailPushBox'); if (!box) return;
+  let c;
+  try { c=(await api('/mail/config')).config; } catch(e){ box.innerHTML=''; return; }
+  const status = c.enabled
+    ? '<div class="ai-status on">✉️ 已配置：'+escapeHtml(c.providerLabel)+'　'+escapeHtml(c.user)+' → '+escapeHtml(c.to)+'</div>'
+    : '<div class="ai-status off">✉️ 还没配置。填好下面的信息，每周一 09:00 妈妈自动把周报发到你邮箱。</div>';
+  box.innerHTML=
+    '<div class="detail-block" style="margin-top:16px"><h3>邮箱推送（每周周报）</h3>'+
+      status+
+      '<div class="setting-item setting-col" style="border:none;padding:6px 0">'+
+        '<div class="setting-desc" style="margin-bottom:6px">发信邮箱类型</div>'+
+        '<div class="engine-pick" id="mailPick">'+
+          c.presets.map(p=>'<div class="ep '+(p.id===c.provider?'on':'')+'" data-id="'+p.id+'">'+
+            '<div class="n">'+escapeHtml(p.label)+'</div>'+
+            '<div class="d">'+escapeHtml(p.host)+':'+p.port+'</div>'+
+          '</div>').join('')+
+        '</div>'+
+      '</div>'+
+      '<div class="setting-item setting-col" style="border:none;padding:6px 0">'+
+        '<div class="setting-desc" style="margin-bottom:6px">发信邮箱（你的邮箱地址）</div>'+
+        '<input class="setting-input" id="smtpUserInput" placeholder="375087889@qq.com" value="'+escapeHtml(c.user||'')+'">'+
+      '</div>'+
+      '<div class="setting-item setting-col" style="border:none;padding:6px 0">'+
+        '<div class="setting-desc" style="margin-bottom:6px">SMTP 授权码（不是邮箱密码！）</div>'+
+        '<input class="setting-input" id="smtpPassInput" type="password" placeholder="'+(c.passSet?'已保存（留空则不修改）':'16 位授权码')+'" autocomplete="off">'+
+      '</div>'+
+      '<div class="setting-item setting-col" style="border:none;padding:6px 0">'+
+        '<div class="setting-desc" style="margin-bottom:6px">收件邮箱（周报发到这）</div>'+
+        '<input class="setting-input" id="mailToInput" placeholder="375087889@qq.com" value="'+escapeHtml(c.to||'')+'">'+
+      '</div>'+
+      '<div style="font-size:12px;color:var(--text-faint);margin:2px 0 12px">'+escapeHtml(c.help||'')+'</div>'+
+      '<button class="btn" id="mailSaveBtn">💾 保存配置</button>'+
+      '<button class="btn btn-ghost" id="mailTestBtn">📮 测试发信</button>'+
+      (c.enabled?'<button class="btn btn-ghost" id="mailSendBtn">📨 立即发一封周报</button>':'')+
+      '<div id="mailTestResult"></div>'+
+      '<div class="guide-box">'+
+        '<b>QQ 邮箱拿授权码（2 分钟）</b>'+
+        '<ol>'+
+        '<li>电脑登录 QQ 邮箱 → 顶部「设置」→「账户」</li>'+
+        '<li>找到「POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV 服务」</li>'+
+        '<li>开启「IMAP/SMTP 服务」，按提示用手机发一条短信</li>'+
+        '<li>拿到一串 <b>16 位授权码</b>，填到上面的输入框</li>'+
+        '</ol>'+
+        '<div style="margin-top:9px">⚠️ 一定不要填你的 QQ 密码，否则会报「登录被拒绝」。'+
+        '<a href="https://mail.qq.com/" target="_blank" rel="noopener">打开 QQ 邮箱 →</a></div>'+
+      '</div>'+
+    '</div>';
+
+  let pick=c.provider||'qq';
+  $$('#mailPick .ep').forEach(el=>{
+    el.onclick=()=>{
+      $$('#mailPick .ep').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on'); pick=el.dataset.id;
+    };
+  });
+  $('#mailSaveBtn').onclick=async()=>{
+    const body={
+      smtpProvider:pick,
+      smtpUser:$('#smtpUserInput').value.trim(),
+      email:$('#mailToInput').value.trim()
+    };
+    const p=$('#smtpPassInput').value.trim();
+    if (p) body.smtpPass=p;
+    try { await api('/mail/config',{method:'PUT',body:body}); toast('邮件配置已保存'); renderMailPushBox(); }
+    catch(e){ toast(e.message||'保存失败'); }
+  };
+  $('#mailTestBtn').onclick=async()=>{
+    const r=$('#mailTestResult'); r.innerHTML='<div class="engine-chip rule">⏳ 正在发送测试邮件…</div>';
+    try {
+      const d=await api('/mail/test',{method:'POST'});
+      r.innerHTML = d.ok
+        ? '<div class="ai-status on">✅ 发送成功！测试邮件已发到 '+escapeHtml(d.result.to)+'，去邮箱看看（可能在垃圾箱）。</div>'
+        : '<div class="ai-status off">❌ 发送失败：'+escapeHtml(d.result.error||'未知错误')+'</div>';
+    } catch(e){
+      const msg = e.payload?.result?.error || e.payload?.error || e.message || '测试失败';
+      r.innerHTML='<div class="ai-status off">❌ '+escapeHtml(msg)+'</div>';
+    }
+  };
+  const sb=$('#mailSendBtn');
+  if (sb) sb.onclick=async()=>{
+    const r=$('#mailTestResult'); r.innerHTML='<div class="engine-chip rule">⏳ 正在生成本周周报并发送…</div>';
+    try {
+      const d=await api('/mail/send-report',{method:'POST'});
+      r.innerHTML='<div class="ai-status on">✅ '+escapeHtml(d.week)+' 周报已发到 '+escapeHtml(d.to)+'</div>';
+    } catch(e){
+      const msg = e.payload?.error || e.message || '发送失败';
+      r.innerHTML='<div class="ai-status off">❌ '+escapeHtml(msg)+'</div>';
+    }
+  };
+}
+
+/* ---------------- 本地 AI 引擎（与服务器同逻辑，预览模式兜底） ---------------- */
+function evaluateFit(opp, text) {
+  const items=[]; const len=text.replace(/\s/g,'').length;
+  let lenScore=70, lenNote='当前约 '+len+' 字，活动未明确字数要求，按通用标准评估';
+  const reqStr=(opp.requirement||'')+(opp.reviewDimensions||'');
+  const rangeMatch=reqStr.match(/(\d+)\s*[~～\-到]\s*(\d+)\s*字/);
+  const singleMatch=reqStr.match(/(\d+)\s*字/);
+  if (rangeMatch) {
+    const lo=+rangeMatch[1], hi=+rangeMatch[2];
+    if (len>=lo&&len<=hi){ lenScore=100; lenNote='约 '+len+' 字，落在要求区间 '+lo+'~'+hi+' 字内 ✓'; }
+    else if (len<lo){ lenScore=Math.max(30,100-Math.round((lo-len)/lo*100)); lenNote='约 '+len+' 字，比要求的 '+lo+' 字少了 '+(lo-len)+' 字，建议扩充'; }
+    else { lenScore=Math.max(40,100-Math.round((len-hi)/hi*60)); lenNote='约 '+len+' 字，超出上限 '+hi+' 字，建议精简'; }
+  } else if (singleMatch && +singleMatch[1]>=100) {
+    const t=+singleMatch[1];
+    if (len>=t*0.8){ lenScore=95; lenNote='约 '+len+' 字，满足要求（≥'+t+' 字）✓'; }
+    else { lenScore=55; lenNote='约 '+len+' 字，未达到要求的 '+t+' 字，建议补足'; }
+  }
+  items.push({name:'篇幅 / 字数要求',score:lenScore,note:lenNote});
+  const themeM=(opp.title||'').match(/[「《【]([^」》】]+)[」》】]/);
+  const theme=themeM?themeM[1]:'';
+  const kwScore=(theme&&text.indexOf(theme)>=0)?95:(len>100?70:60);
+  items.push({name:'题材 / 主题契合',score:kwScore,note:theme?(text.indexOf(theme)>=0?'文案中出现了主题词「'+theme+'」，契合度高 ✓':'文案中未明显出现主题词「'+theme+'」，建议在标题或开头点题'):'该活动无明确主题词，按通用契合度评估'});
+  const needsFirst=/首发|未发布|独家/.test(reqStr);
+  items.push({name:'原创 / 首发风险',score:needsFirst?65:90,note:needsFirst?'该活动要求「首发 / 未发布」，请确认此文未在其他平台发布过 ⚠':'未检测到首发冲突信息'});
+  let sScore=60; const sn=[];
+  if (/[？?]|如何|怎么|\d+个|\d+种|^第/.test(text.slice(0,40))){ sScore+=15; sn.push('开头有钩子'); }
+  if (len>300){ sScore+=10; sn.push('内容有展开'); }
+  if (/总结|最后|综上|希望|建议/.test(text.slice(-200))){ sScore+=15; sn.push('有收尾'); }
+  items.push({name:'结构完整度',score:Math.min(100,sScore),note:sn.length?'检测到：'+sn.join('、'):'结构较平，建议加开头钩子与结尾总结'});
+  let dScore=70, dNote='活动未公开评审维度，按通用标准评估';
+  if (opp.reviewDimensions){ dScore=75; dNote='该活动评审维度：'+opp.reviewDimensions+'。请对照自查是否覆盖了权重最高的那一项'; }
+  items.push({name:'评审维度覆盖',score:dScore,note:dNote});
+  const total=Math.round(items[0].score*.2+items[1].score*.25+items[2].score*.2+items[3].score*.2+items[4].score*.15);
+  const verdict=total>=85?'推荐投稿（胜算较高）':total>=70?'可以投稿，建议按建议优化后再投':total>=55?'谨慎投稿，需较大修改':'不建议直接投稿，建议重写或换活动';
+  const suggestions=items.filter(it=>it.score<85).map(it=>'【'+it.name+'】'+it.note);
+  if (!suggestions.length) suggestions.push('各项要求均达标，整体质量不错，可微调细节后直接投稿。');
+  const risks=[];
+  if (needsFirst) risks.push('该活动要求首发/未发布，切勿先在别处发布，否则可能失去资格。');
+  if (len<300&&opp.type==='prize') risks.push('篇幅偏短，部分评审看内容厚度，建议适当扩充。');
+  if (!risks.length) risks.push('未发现明显硬伤。');
+  return { opportunityId:opp.id, opportunityTitle:opp.title, platform:opp.platform, total:total, verdict:verdict, items:items, suggestions:suggestions, risks:risks, evaluatedAt:nowISO(),
+    disclaimer:'评估基于活动公开要求与文案文本特征的匹配度计算，为参考性意见，不代表最终评选结果。' };
+}
+function rewriteFor(opp, text) {
+  const themeM=(opp.title||'').match(/[「《【]([^」》】]+)[」》】]/);
+  const theme=themeM?themeM[1]:'';
+  const reqStr=(opp.requirement||'')+(opp.reviewDimensions||'');
+  const rm=reqStr.match(/(\d+)\s*[~～\-到]\s*(\d+)\s*字/);
+  const lo=rm?+rm[1]:null, hi=rm?+rm[2]:null;
+  let out=text.trim();
+  const lines=out.split('\n');
+  const firstLine=lines[0]||'';
+  const hooks=['我用亲身经历告诉你：','真实复盘：','3 个月实战总结：','别再踩坑了，'];
+  const hook=hooks[Math.floor(Math.random()*hooks.length)];
+  const newTitle=(theme&&firstLine.indexOf(theme)<0)?(hook+'关于「'+theme+'」，我想说的都在这里'):(hook+firstLine);
+  out=newTitle+'\n\n'+lines.slice(1).join('\n').trim();
+  if (theme&&out.indexOf(theme)<0) out=out.replace(/\n\n/,'\n\n今天想聊聊「'+theme+'」这个话题。\n\n');
+  const cur=out.replace(/\s/g,'').length;
+  if (lo&&cur<lo) {
+    const filler='\n\n补充一点细节：'+(theme?'在「'+theme+'」这件事上，':'')+'我实际操作时还注意到一个容易被忽略的点——很多人失败不是因为方法不对，而是执行节奏乱了。我的做法是把它拆成小步骤，每完成一步就复盘一次，这样即使中间卡住也能快速调整。这部分经验对我帮助很大，希望对看到这里的你也有用。';
+    out+=filler.repeat(Math.max(1,Math.ceil((lo-cur)/filler.replace(/\s/g,'').length)));
+  } else if (hi&&cur>hi) {
+    const cut=Math.ceil((cur-hi)/cur*out.length);
+    out=out.slice(0,out.length-cut)+'……';
+  }
+  if (!/欢迎|评论|关注|点赞|收藏/.test(out.slice(-200))) out+='\n\n如果你也在'+(theme?'「'+theme+'」':'')+'这件事上摸索，欢迎在评论区聊聊你的经历，我会一条条回复。觉得有用的话，点个赞让更多人看到。';
+  return out;
+}
+function analyzeProductize(text) {
+  const len=text.replace(/\s/g,'').length;
+  const isHowTo=/如何|怎么|教程|方法|步骤|经验|复盘|实战/.test(text);
+  const hasData=/\d+%|\d+倍|\d+个月|\d+天|月入|收入/.test(text);
+  const potential=Math.min(95,40+(isHowTo?25:0)+(hasData?20:0)+Math.min(15,Math.floor(len/200)));
+  return { potential:potential,
+    verdict:potential>=80?'推荐做成知识付费产品':potential>=60?'有潜力，建议补充方法论后上架':'暂不建议，内容偏碎片化',
+    reasons:[isHowTo?'内容包含方法/经验类信息，具备「可复制」属性 ✓':'内容偏叙事，缺少可复制的步骤，建议补充方法部分',
+      hasData?'包含具体数据，说服力强 ✓':'缺少具体数据支撑，建议加入真实数字',
+      '全文约 '+len+' 字，'+(len>500?'可作为图文资料包':'偏短，建议扩充为完整资料')],
+    priceSuggestion:potential>=80?'19~99 元':potential>=60?'9.9~29 元':'建议先免费引流',
+    recommendPlatforms:[{name:'闲鱼',reason:'门槛最低，适合快速验证有没有人买'},{name:'小红书',reason:'用户付费意愿相对高，适合轻咨询+资料组合'},{name:'抖音',reason:'有流量基础时可挂载课程，转化直接'}],
+    outline:['第一章：我为什么要做这件事（背景与动机）','第二章：从 0 到 1 的完整步骤拆解','第三章：我踩过的坑与避坑清单','第四章：可直接套用的模板与清单','第五章：常见问题答疑'],
+    disclaimer:'产品化潜力为基于文本特征的参考性评估；平台上架需你本人操作。' };
+}
+
+/* ---------------- 主题 / 模态 ---------------- */
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme',t);
+  try{ localStorage.setItem('aimama_theme',t); }catch(e){}
+  document.querySelector('meta[name=theme-color]').setAttribute('content',t==='dark'?'#06080f':'#f2f4f9');
+}
+function showModal(html){ $('#modalBox').innerHTML=html; $('#modalMask').classList.remove('hidden'); }
+function closeModal(){ $('#modalMask').classList.add('hidden'); }
+
+/* ---------------- 初始化 ---------------- */
+function init() {
+  if (ONLINE_DEMO) enableDemo();
+  let saved=null; try{ saved=localStorage.getItem('aimama_theme'); }catch(e){}
+  if (saved) setTheme(saved);
+  else if (window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches) setTheme('light');
+  try{ const ds=localStorage.getItem('aimama_demo_settings'); if(ds) Object.assign(DEMO_STATE.settings,JSON.parse(ds)); }catch(e){}
+  try{ const a=localStorage.getItem('aimama_demo_aiconfig'); if(a) Object.assign(DEMO_STATE.aiConfig,JSON.parse(a)); }catch(e){}
+  try{ const m=localStorage.getItem('aimama_demo_mailconfig'); if(m) Object.assign(DEMO_STATE.mailConfig,JSON.parse(m)); }catch(e){}
+
+  // 自动重连：首次打开时若网络慢进了演示模式，每 15 秒探测一次服务器，
+  // 一旦连上就自动切回真实数据（用户什么都不用做）
+  if (!ONLINE_DEMO) {
+    setInterval(async () => {
+      if (!DEMO_MODE) return;
+      try {
+        const API_BASE = window.AIMAMA_API_BASE || '';
+        const r = await fetch(API_BASE + '/api/health', { cache: 'no-store' });
+        if (r.ok) {
+          const j = await r.json().catch(() => null);
+          if (j && j.ok) exitDemo();
+        }
+      } catch (e) { /* 还没连上，下次再试 */ }
+    }, 15000);
+  }
+
+
+  $$('.nav-item').forEach(n=>n.onclick=()=>nav(n.dataset.nav));
+  $$('[data-nav]').forEach(el=>{ if(!el.classList.contains('nav-item')) el.onclick=()=>nav(el.dataset.nav); });
+
+  $$('#typeTabs .tab').forEach(t=>{
+    t.onclick=()=>{
+      $$('#typeTabs .tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      if (t.dataset.sort){ STATE.sort=t.dataset.sort; STATE.type='all'; }
+      else { STATE.type=t.dataset.type; STATE.sort=''; }
+      loadList();
+    };
+  });
+  let timer;
+  $('#searchInput').oninput=(e)=>{ clearTimeout(timer); timer=setTimeout(()=>{ STATE.keyword=e.target.value.trim(); loadList(); },300); };
+  let lTimer;
+  $('#learnSearch').oninput=(e)=>{ clearTimeout(lTimer); lTimer=setTimeout(()=>{ LEARN_STATE.keyword=e.target.value.trim(); loadLearn(); },300); };
+  bindLearnTabs();
+  $('#themeBtn').onclick=()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+  $('#modalMask').onclick=(e)=>{ if(e.target.id==='modalMask') closeModal(); };
+  $('#genReportBtn').onclick=async()=>{
+    try {
+      const data=await api('/reports/generate',{method:'POST',body:{}});
+      toast('已生成 '+data.report.week+' 周报'); loadReports();
+    } catch(e){}
+  };
+  nav('home');
+}
+document.addEventListener('DOMContentLoaded',init);
+
+/* PWA：注册 Service Worker，让手机可以「添加到主屏幕」并支持断网打开 */
+if ('serviceWorker' in navigator && !ONLINE_DEMO) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
