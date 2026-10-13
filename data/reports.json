@@ -1,0 +1,122 @@
+[
+  {
+    "id": "rp-mv4qz2mqp7h1",
+    "week": "2026-W42",
+    "createdAt": "2026-10-12T04:23:53.618Z",
+    "totalCount": 24,
+    "counts": {
+      "flow": 8,
+      "prize": 6,
+      "product": 4,
+      "sample": 6
+    },
+    "urgentIds": [
+      "op-prize-006",
+      "op-prize-004",
+      "op-prize-003",
+      "op-prize-002"
+    ],
+    "highPrizeIds": [
+      "op-prize-003",
+      "op-prize-001",
+      "op-prize-002"
+    ],
+    "headline": "4 个机会即将截稿，最高奖金 8000 元",
+    "aiComment": "姐妹，有 4 个活动快截止了，先处理这些；「品牌命题创作大赛」奖金最高，值得优先考虑。"
+  },
+  {},
+  {
+    "id": "rp-mv39dlmd0xwi",
+    "week": "2026-W41",
+    "createdAt": "2026-10-11T03:23:32.149Z",
+    "totalCount": 24,
+    "counts": {
+      "flow": 8,
+      "prize": 6,
+      "product": 4,
+      "sample": 6
+    },
+    "urgentIds": [
+      "op-prize-006",
+      "op-prize-004",
+      "op-prize-003",
+      "op-prize-002"
+    ],
+    "highPrizeIds": [
+      "op-prize-003",
+      "op-prize-001",
+      "op-prize-002"
+    ],
+    "headline": "4 个机会即将截稿，最高奖金 8000 元",
+    "aiComment": "姐妹，有 4 个活动快截止了，先处理这些；「品牌命题创作大赛」奖金最高，值得优先考虑。"
+  },
+  {
+    "id": "rp-muz714jj2u37",
+    "week": "2026-W41",
+    "createdAt": "2026-10-08T07:06:46.207Z",
+    "totalCount": 18,
+    "counts": {
+      "flow": 8,
+      "prize": 6,
+      "product": 4
+    },
+    "urgentIds": [
+      "op-prize-006",
+      "op-prize-004",
+      "op-prize-003"
+    ],
+    "highPrizeIds": [
+      "op-prize-003",
+      "op-prize-001",
+      "op-prize-002"
+    ],
+    "headline": "3 个机会即将截稿，最高奖金 8000 元",
+    "aiComment": "姐妹，有 3 个活动快截止了，先处理这些；「品牌命题创作大赛」奖金最高，值得优先考虑。"
+  },
+  {
+    "id": "rp-muz6wfmsiyjj",
+    "week": "2026-W41",
+    "createdAt": "2026-10-08T07:03:07.300Z",
+    "totalCount": 18,
+    "counts": {
+      "flow": 8,
+      "prize": 6,
+      "product": 4
+    },
+    "urgentIds": [
+      "op-prize-006",
+      "op-prize-004",
+      "op-prize-003"
+    ],
+    "highPrizeIds": [
+      "op-prize-003",
+      "op-prize-001",
+      "op-prize-002"
+    ],
+    "headline": "3 个机会即将截稿，最高奖金 8000 元",
+    "aiComment": "姐妹，有 3 个活动快截止了，先处理这些；「品牌命题创作大赛」奖金最高，值得优先考虑。"
+  },
+  {
+    "id": "rp-muz6vhyelj5b",
+    "week": "2026-W41",
+    "createdAt": "2026-10-08T07:02:23.654Z",
+    "totalCount": 18,
+    "counts": {
+      "flow": 8,
+      "prize": 6,
+      "product": 4
+    },
+    "urgentIds": [
+      "op-prize-006",
+      "op-prize-004",
+      "op-prize-003"
+    ],
+    "highPrizeIds": [
+      "op-prize-003",
+      "op-prize-001",
+      "op-prize-002"
+    ],
+    "headline": "3 个机会即将截稿，最高奖金 8000 元",
+    "aiComment": "姐妹，有 3 个活动快截止了，先处理这些；「品牌命题创作大赛」奖金最高，值得优先考虑。"
+  }
+]
