@@ -1,0 +1,23 @@
+{
+  "name": "ai-mama",
+  "version": "1.4.0",
+  "description": "AI妈妈 - 女性内容创作者的变现管家（支持本地运行 / 云平台部署）",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "test": "node test/api-test.js && node test/cloud-store-test.js",
+    "test:browser": "python3 test/browser-test.py",
+    "test:pwa": "python3 test/pwa-test.py",
+    "cloud:init": "node cloud/init-db.js"
+  },
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.3",
+    "express": "^4.22.3",
+    "nodemailer": "^10.0.16"
+  }
+}
