@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+
+# 运行时数据：只忽略临时文件，
+# 保留初始种子数据（data/*.json）以便云平台首次启动时有内容
+data/*.tmp
+data/.runtime/
